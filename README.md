@@ -13,3 +13,19 @@ Key Features:
 📊 Stats Tracking: Gain valuable insights into your work habits and accomplishments with comprehensive statistics tracking. Analyze your productivity trends over time, empowering you to make data-driven decisions for improved performance.
 
 Discover the power of PomodoroDex and take control of your productivity like never before. 
+
+
+Sources I used:
+
+Icons: 
+
+- https://github.com/twbs/icons/releases/tag/v1.11.1
+
+- Pomodordex-icon: me (generated with Stable-Diffusion)
+
+Audio:
+
+- https://pixabay.com/sound-effects/ticking-clock-1-27477/
+- https://pixabay.com/sound-effects/service-bell-ring-14610/
+- https://www.youtube.com/watch?v=sGEIRasPwaw
+- https://www.youtube.com/watch?v=FgAYKU-GLoI

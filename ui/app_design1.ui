@@ -13,6 +13,16 @@
   <property name="windowTitle">
    <string>Pomodorodex</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../app/resources/rescources.qrc">
+    <normaloff>:/icons/pomodorodex.ico</normaloff>:/icons/pomodorodex.ico</iconset>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>32</width>
+    <height>32</height>
+   </size>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="font">
     <font>
@@ -171,8 +181,8 @@ QPushButton:hover {
                 <string/>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>../img/play-fill.svg</normaloff>../img/play-fill.svg</iconset>
+                <iconset resource="../app/resources/rescources.qrc">
+                 <normaloff>:/svg/play-fill.svg</normaloff>:/svg/play-fill.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -724,6 +734,37 @@ background-color: rgba( 86, 71, 174, 0.16)
               </widget>
               <widget class="QWidget" name="statistics_content_WidgetPage">
                <layout class="QGridLayout" name="gridLayout_12">
+                <item row="0" column="3">
+                 <widget class="QPushButton" name="move_forward_pushButton">
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+    border: solid;
+    border-color: #5647ae;
+    border-width: 3px;
+    border-radius: 15px;
+    color: #f0f0f0;
+    background-color: rgba(0,0,0,0);
+}
+
+QPushButton:hover{
+background-color: rgba( 86, 71, 174, 0.16)
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../app/resources/rescources.qrc">
+                    <normaloff>:/svg/forward-fill.svg</normaloff>:/svg/forward-fill.svg</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="day_week_month_label">
                   <property name="maximumSize">
@@ -766,8 +807,8 @@ background-color: rgba( 86, 71, 174, 0.16)
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset>
-                    <normaloff>../img/backward-fill.svg</normaloff>../img/backward-fill.svg</iconset>
+                   <iconset resource="../app/resources/rescources.qrc">
+                    <normaloff>:/svg/backward-fill.svg</normaloff>:/svg/backward-fill.svg</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -789,37 +830,6 @@ background-color: rgba( 86, 71, 174, 0.16)
                    </size>
                   </property>
                  </spacer>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QPushButton" name="move_forward_pushButton">
-                  <property name="styleSheet">
-                   <string notr="true">QPushButton {
-    border: solid;
-    border-color: #5647ae;
-    border-width: 3px;
-    border-radius: 15px;
-    color: #f0f0f0;
-    background-color: rgba(0,0,0,0);
-}
-
-QPushButton:hover{
-background-color: rgba( 86, 71, 174, 0.16)
-}</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset>
-                    <normaloff>../img/forward-fill.svg</normaloff>../img/forward-fill.svg</iconset>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                 </widget>
                 </item>
                 <item row="1" column="0" colspan="4">
                  <widget class="QStackedWidget" name="bar_graph_stackedWidget">
@@ -885,7 +895,7 @@ QScrollBar::sub-line:vertical {
                    <property name="geometry">
                     <rect>
                      <x>0</x>
-                     <y>-331</y>
+                     <y>0</y>
                      <width>714</width>
                      <height>1204</height>
                     </rect>
@@ -1733,6 +1743,8 @@ p, li { white-space: pre-wrap; }
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../app/resources/rescources.qrc"/>
+ </resources>
  <connections/>
 </ui>

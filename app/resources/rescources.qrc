@@ -1,0 +1,11 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+    <file>svg/backward-fill.svg</file>
+    <file>svg/forward-fill.svg</file>
+    <file>svg/pause-fill.svg</file>
+    <file>svg/play-fill.svg</file>
+    <file>svg/stop-fill.svg</file>
+    <file>svg/volume-up.svg</file>
+    <file>icons/pomodorodex.ico</file>
+    </qresource>
+</RCC>
