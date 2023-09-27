@@ -595,7 +595,7 @@ QToolButton#qt_stackwidget_qtoolbutton {
                <enum>QFrame::Raised</enum>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="task_managment_content_WidgetPage">
                <layout class="QGridLayout" name="gridLayout_5">

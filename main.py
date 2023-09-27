@@ -21,4 +21,10 @@ def main():
 palette = QPalette()
 palette.setColor(QPalette.PlaceholderText, QColor("#9e9e9e"))
 self.lineEdit.setPalette(palette)
+
+        # btn
+        self.Task_pushButton.clicked.connect(lambda: self.content_stackedWidget.setCurrentIndex(0))
+        self.statistics_pushButton.clicked.connect(lambda: self.content_stackedWidget.setCurrentIndex(1))
+        self.settings_pushButton.clicked.connect(lambda: self.content_stackedWidget.setCurrentIndex(2))
+
 '''

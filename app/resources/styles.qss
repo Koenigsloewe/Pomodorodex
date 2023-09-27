@@ -1,0 +1,49 @@
+*{
+    color:white;
+    font-size:14px;
+}
+
+#centralwidget {
+    background-color: #121212;
+}
+
+#myTimer {
+    background-color: #2a2929;
+    border: solid;
+    border-radius: 20px;
+}
+
+QLabel {
+    font-size: 28px;
+}
+
+QPushButton {
+    border: none;
+    border-radius: 20px;
+    color: #f0f0f0;
+    background-color: #5647ae;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+QPushButton:hover {
+	background-color: #483d94;
+}
+
+#circle_bg {
+    background-color: #3f3f3f;
+    border-radius: 149px;
+}
+
+#circle_path{
+    background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.749 rgba(0, 0, 0, 0), stop:0.75 rgba(255, 255, 255, 255));
+    border-radius: 149px;
+}
+
+#circle_fg{
+    background-color: #2a2929;
+    border-radius: 137px;
+}
+
+#timer_label{
+    font-size: 40px;
+}
