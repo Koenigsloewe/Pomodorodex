@@ -7,17 +7,11 @@
     background-color: #121212;
 }
 
-#myTimer {
-    background-color: #2a2929;
-    border: solid;
-    border-radius: 20px;
-}
-
 QLabel {
     font-size: 28px;
 }
 
-QPushButton {
+#primary_btn {
     border: none;
     border-radius: 20px;
     color: #f0f0f0;
@@ -25,8 +19,27 @@ QPushButton {
     padding-left: 20px;
     padding-right: 20px;
 }
-QPushButton:hover {
+#primary_btn:hover {
 	background-color: #483d94;
+}
+
+#secondary_btn{
+    border: solid ;
+    border-color: #5647ae;
+    border-width: 3px;
+    border-radius: 20px;
+    color: #f0f0f0;
+    background-color: rgba(0,0,0,0);
+}
+
+#secondary_btn:hover{
+    background-color: rgba( 86, 71, 174, 0.16)
+}
+
+#myTimer {
+    background-color: #2a2929;
+    border: solid;
+    border-radius: 20px;
 }
 
 #circle_bg {
@@ -46,4 +59,39 @@ QPushButton:hover {
 
 #timer_label{
     font-size: 40px;
+}
+
+#menubar_widget{
+    background-color: #2a2929;
+    border: solid;
+    border-radius: 20px;
+}
+
+#content_widget{
+    background-color: #2a2929;
+    border: solid;
+    border-radius: 20px;
+}
+
+#line_edit{
+    border: solid ;
+    border-color: #5647ae;
+    border-width: 3px;
+    border-radius: 20px;
+    color: #f0f0f0;
+    background-color: rgba(0,0,0,0);
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#UwU {
+    background-color: white;
+}
+
+#w {
+    background-color: green;
+}
+
+#a {
+    background-color: yellow;
 }
