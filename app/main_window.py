@@ -18,6 +18,11 @@ try:
 except ModuleNotFoundError:
     from .components.content import Content
 
+try:
+    from functions.pomodoro_timer_function import TimerApp
+except ModuleNotFoundError:
+    from .functions.pomodoro_timer_function import TimerApp
+
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -77,10 +82,7 @@ class MainWindow(QMainWindow):
             style_sheet = qss_file.read()
             self.setStyleSheet(style_sheet)
 
-        self.to_stupid_to_close()
-
-        # connections
-        #pomodoro_timer.start_btn.clicked.connect(None)
+        #self.to_stupid_to_close()
 
     def to_stupid_to_close(self):
         self.exit_timer = QTimer()

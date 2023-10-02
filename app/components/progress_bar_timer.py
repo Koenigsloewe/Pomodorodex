@@ -40,18 +40,17 @@ class ProgressBar(QWidget):
         # print(f"w:{bg.width()} and h:{bg.height()}")
 
         # circle path
-        circle_path = QWidget()
-        circle_path.setObjectName("circle_path")
-        circle_path.setMinimumSize(300, 300)
-        circle_path.setMaximumSize(300, 300)
-        circle_bg_widget_layout.addWidget(circle_path)
-        # color : qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.749 rgba(0, 0, 0, 0), stop:0.75 rgba(255, 255, 255, 255))
+        self.circle_path = QWidget()
+        self.circle_path.setObjectName("circle_path")
+        self.circle_path.setMinimumSize(300, 300)
+        self.circle_path.setMaximumSize(300, 300)
+        circle_bg_widget_layout.addWidget(self.circle_path)
 
         # layout for circle path
         circle_path_layout = QGridLayout()
         circle_path_layout.setContentsMargins(0, 0, 0, 0)
         circle_path_layout.setSpacing(0)
-        circle_path.setLayout(circle_path_layout)
+        self.circle_path.setLayout(circle_path_layout)
 
         # circle fg widget
         circle_fg_widget = QWidget()
@@ -64,7 +63,7 @@ class ProgressBar(QWidget):
         circle_fg_widget_layout = QGridLayout()
         circle_fg_widget.setLayout(circle_fg_widget_layout)
 
-        timer_label = QLabel("25:00")
-        timer_label.setObjectName("timer_label")
-        timer_label.setAlignment(Qt.AlignCenter)
-        circle_fg_widget_layout.addWidget(timer_label)
+        self.timer_label = QLabel("00:25:00")
+        self.timer_label.setObjectName("timer_label")
+        self.timer_label.setAlignment(Qt.AlignCenter)
+        circle_fg_widget_layout.addWidget(self.timer_label)

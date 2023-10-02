@@ -47,11 +47,6 @@ QLabel {
     border-radius: 149px;
 }
 
-#circle_path{
-    background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:0.749 rgba(0, 0, 0, 0), stop:0.75 rgba(255, 255, 255, 255));
-    border-radius: 149px;
-}
-
 #circle_fg{
     background-color: #2a2929;
     border-radius: 137px;
