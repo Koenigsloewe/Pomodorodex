@@ -36,17 +36,19 @@ class Content(QWidget):
         content_widget_layout.setContentsMargins(0, 0, 0, 0)
         content_widget.setLayout(content_widget_layout)
 
-        content_stacked_widget = QStackedWidget()
-        content_widget_layout.addWidget(content_stacked_widget)
+        self.content_stacked_widget = QStackedWidget()
+        content_widget_layout.addWidget(self.content_stacked_widget)
 
         # page 1
-        page1 = TaskManagement()
-        content_stacked_widget.addWidget(page1)
+        self.page1 = TaskManagement()
+        self.content_stacked_widget.addWidget(self.page1)
 
         # page 2
-        page2 = Statistic()
-        content_stacked_widget.addWidget(page2)
+        self.page2 = Statistic()
+        self.content_stacked_widget.addWidget(self.page2)
 
         # page 3
-        page3 = Settings()
-        content_stacked_widget.addWidget(page3)
+        self.page3 = Settings()
+        self.content_stacked_widget.addWidget(self.page3)
+
+        self.content_stacked_widget.setCurrentWidget(self.page1)

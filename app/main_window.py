@@ -71,18 +71,46 @@ class MainWindow(QMainWindow):
         helper2_layout.setContentsMargins(0, 0, 21, 21)
         helper2.setLayout(helper2_layout)
 
-        menubar = MenuBar()
-        helper1_layout.addWidget(menubar)
+        self.menubar = MenuBar()
+        helper1_layout.addWidget(self.menubar)
 
-        content = Content()
-        helper2_layout.addWidget(content)
-        #print(f"h:{content.height()}, w:{content.width()},\n {management_tool_layout.spacing()}")
+        self.content = Content()
+        helper2_layout.addWidget(self.content)
 
-        with open("app/resources/styles.qss", "r") as qss_file:
-            style_sheet = qss_file.read()
-            self.setStyleSheet(style_sheet)
+        # btn connections
+        self.menubar.task_btn.clicked.connect(self.click_task_btn)
+        self.menubar.statistics_btn.clicked.connect(self.click_statistics_btn)
+        self.menubar.settings_btn.clicked.connect(self.click_settings_btn)
+
+        self.load_stylesheet()
+
 
         #self.to_stupid_to_close()
+
+    def click_task_btn(self):
+        self.content.content_stacked_widget.setCurrentWidget(self.content.page1)
+        self.menubar.task_btn.setObjectName("primary_btn")
+        self.menubar.statistics_btn.setObjectName("secondary_btn")
+        self.menubar.settings_btn.setObjectName("secondary_btn")
+
+        self.load_stylesheet()
+
+    def click_statistics_btn(self):
+        self.content.content_stacked_widget.setCurrentWidget(self.content.page2)
+        self.menubar.task_btn.setObjectName("secondary_btn")
+        self.menubar.statistics_btn.setObjectName("primary_btn")
+        self.menubar.settings_btn.setObjectName("secondary_btn")
+
+        self.load_stylesheet()
+
+
+    def click_settings_btn(self):
+        self.content.content_stacked_widget.setCurrentWidget(self.content.page3)
+        self.menubar.task_btn.setObjectName("secondary_btn")
+        self.menubar.statistics_btn.setObjectName("secondary_btn")
+        self.menubar.settings_btn.setObjectName("primary_btn")
+
+        self.load_stylesheet()
 
     def to_stupid_to_close(self):
         self.exit_timer = QTimer()
@@ -91,6 +119,11 @@ class MainWindow(QMainWindow):
 
     def exit(self):
         QApplication.quit()
+
+    def load_stylesheet(self):
+        with open("app/resources/styles.qss", "r") as qss_file:
+            style_sheet = qss_file.read()
+            self.setStyleSheet(style_sheet)
 
 def main():
     app = QApplication(sys.argv)
