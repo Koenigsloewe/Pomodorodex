@@ -1,8 +1,12 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLineEdit, \
     QPushButton, QCheckBox, QScrollArea, QInputDialog
 
+try:
+    from app.resources import resources
+except ModuleNotFoundError:
+    from app.resources import resources
 
 class TaskManagement(QWidget):
     def __init__(self):
@@ -70,6 +74,7 @@ class TaskManagement(QWidget):
         self.tasks = []
 
         # conncections
+        self.line_edit.returnPressed.connect(self.save_task)
         self.save_btn.clicked.connect(self.save_task)
         self.clear_btn.clicked.connect(self.clear_task)
 
@@ -84,31 +89,54 @@ class TaskManagement(QWidget):
             task_widget.setMinimumSize(150, 50)
 
             # task widget layout
-            task_widget_layout = QHBoxLayout()
-            task_widget_layout.setContentsMargins(0, 0, 0, 0)
-            task_widget_layout.setSpacing(30)
-            task_widget.setLayout(task_widget_layout)
+            self.task_widget_layout_ = QHBoxLayout()
+            self.task_widget_layout_.setContentsMargins(0, 0, 0, 0)
+            self.task_widget_layout_.setSpacing(15)
+            task_widget.setLayout(self.task_widget_layout_)
 
             # task checkbox
-            task_checkbox = QCheckBox(task_text)
-            task_widget_layout.addWidget(task_checkbox)
+            task_checkbox = QCheckBox()
+            self.task_widget_layout_.addWidget(task_checkbox)
+
+            # text task line edit
+            self.text_line_edit = QLineEdit(task_text)
+            self.text_line_edit.setObjectName("text_line_edit")
+            self.text_line_edit.setReadOnly(True)
+            self.task_widget_layout_.addWidget(self.text_line_edit)
 
             # btns
-            self.edit_btn = QPushButton("Edit")
+            self.edit_btn = QPushButton("")
+            self.edit_btn.setIcon(QIcon(QPixmap(":/svg/edit.svg")))
+            self.edit_btn.setIconSize(QSize(40, 40))
             self.edit_btn.setObjectName("primary_btn")
-            self.edit_btn.setMinimumSize(120, 50)
-            self.edit_btn.setMaximumSize(120, 50)
-            task_widget_layout.addWidget(self.edit_btn)
+            self.edit_btn.setMinimumSize(70, 50)
+            self.edit_btn.setMaximumSize(70, 50)
+            self.task_widget_layout_.addWidget(self.edit_btn)
 
-            self.delete_btn = QPushButton("Delete")
+            self.delete_btn = QPushButton("")
+            self.delete_btn.setIcon(QIcon(QPixmap(":/svg/trash-fill.svg")))
+            self.delete_btn.setIconSize(QSize(40, 40))
             self.delete_btn.setObjectName("primary_btn")
-            self.delete_btn.setMinimumSize(120, 50)
-            self.delete_btn.setMaximumSize(120, 50)
-            task_widget_layout.addWidget(self.delete_btn)
+            self.delete_btn.setMinimumSize(70, 50)
+            self.delete_btn.setMaximumSize(70, 50)
+            self.task_widget_layout_.addWidget(self.delete_btn)
+
+            self.save_task_btn = QPushButton("")
+            self.save_task_btn.setIcon(QIcon(QPixmap(":/svg/save.svg")))
+            self.save_task_btn.setIconSize(QSize(40, 40))
+            self.save_task_btn.setObjectName("primary_btn")
+            self.save_task_btn.setMinimumSize(70, 50)
+            self.save_task_btn.setMaximumSize(70, 50)
+
+            self.cancel_btn = QPushButton("")
+            self.cancel_btn.setIcon(QIcon(QPixmap(":/svg/cancel.svg")))
+            self.cancel_btn.setIconSize(QSize(40, 40))
+            self.cancel_btn.setObjectName("secondary_btn")
+            self.cancel_btn.setMinimumSize(70, 50)
+            self.cancel_btn.setMaximumSize(70, 50)
 
             # add to list...
             self.tasks.append((task_checkbox, self.edit_btn, self.delete_btn, task_widget))
-            print(self.tasks)
             # add to layout
             self.task_widget_layout.addWidget(task_widget)
 
@@ -122,10 +150,21 @@ class TaskManagement(QWidget):
         self.line_edit.clear()
 
     def edit_task(self, task_checkbox):
-        new_text, ok = QInputDialog.getText(self, 'Edit Task', 'New Task Description:', QLineEdit.Normal,
-                                            task_checkbox.text())
-        if ok and new_text:
-            task_checkbox.setText(new_text)
+        current_text = self.text_line_edit.text()
+        self.text_line_edit.setReadOnly(False)
+        self.text_line_edit.setFocus()
+
+        self.task_widget_layout_.removeWidget(self.edit_btn)
+        self.edit_btn.setParent(None)
+
+        self.task_widget_layout_.removeWidget(self.delete_btn)
+        self.delete_btn.setParent(None)
+
+        self.task_widget_layout_.addWidget(self.save_task_btn)
+        self.task_widget_layout_.addWidget(self.cancel_btn)
+
+        self.save_task_btn.clicked.connect(lambda: self.save())
+        self.cancel_btn.clicked.connect(lambda: self.cancel(current_text))
 
     def delete_task(self, task_widget):
         for task_element in self.tasks:
@@ -134,3 +173,22 @@ class TaskManagement(QWidget):
                 break
 
         task_widget.setParent(None)
+
+    def cancel(self, current_text):
+        self.text_line_edit.setText(current_text)
+        self.text_line_edit.setReadOnly(True)
+        self.change_btns()
+
+    def save(self):
+        self.text_line_edit.setReadOnly(True)
+        self.change_btns()
+
+    def change_btns(self):
+        self.task_widget_layout_.removeWidget(self.save_task_btn)
+        self.save_task_btn.setParent(None)
+
+        self.task_widget_layout_.removeWidget(self.cancel_btn)
+        self.cancel_btn.setParent(None)
+
+        self.task_widget_layout_.addWidget(self.edit_btn)
+        self.task_widget_layout_.addWidget(self.delete_btn)

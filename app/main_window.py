@@ -18,10 +18,6 @@ try:
 except ModuleNotFoundError:
     from .components.content import Content
 
-try:
-    from functions.pomodoro_timer_function import TimerApp
-except ModuleNotFoundError:
-    from .functions.pomodoro_timer_function import TimerApp
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
