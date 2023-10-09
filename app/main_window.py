@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         super().__init__(*args, **kwargs)
         self.setWindowTitle("Pomodorodex")
         self.setMinimumSize(1280, 720)
-        self.setWindowIcon(QIcon("app/resources/icons/pomodorodex.ico"))
+        self.setWindowIcon(QIcon(":/icons/pomodorodex.ico"))
 
         # create centralWidget
         centralwidget = QWidget()

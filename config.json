@@ -1,0 +1,14 @@
+{
+  "routines": [
+    {"time": "00:25:00", "label": "Pomodoro"},
+    {"time": "00:05:00", "label": "Short Break"},
+    {"time": "00:25:00", "label": "Pomodoro"},
+    {"time": "00:05:00", "label": "Short Break"},
+    {"time": "00:25:00", "label": "Pomodoro"},
+    {"time": "00:05:00", "label": "Short Break"},
+    {"time": "00:25:00", "label": "Pomodoro"},
+    {"time": "00:05:00", "label": "Short Break"},
+    {"time": "00:25:00", "label": "Pomodoro"},
+    {"time": "00:20:00", "label": "Long Break"}
+  ]
+}

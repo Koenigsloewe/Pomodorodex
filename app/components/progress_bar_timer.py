@@ -63,7 +63,7 @@ class ProgressBar(QWidget):
         circle_fg_widget_layout = QGridLayout()
         circle_fg_widget.setLayout(circle_fg_widget_layout)
 
-        self.timer_label = QLabel("00:25:00")
+        self.timer_label = QLabel("")
         self.timer_label.setObjectName("timer_label")
         self.timer_label.setAlignment(Qt.AlignCenter)
         circle_fg_widget_layout.addWidget(self.timer_label)

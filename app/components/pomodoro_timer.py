@@ -1,6 +1,8 @@
-from PyQt5.QtCore import Qt, pyqtSignal, QTime, QTimer, QSize
+from PyQt5.QtCore import Qt, pyqtSignal, QTime, QTimer, QSize, QUrl
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton
+from PyQt5.QtMultimedia import QSoundEffect
+import json
 
 try:
     from progress_bar_timer import ProgressBar
@@ -14,7 +16,7 @@ except ModuleNotFoundError:
 
 
 class Timer(QWidget):
-    time_updated = pyqtSignal(str)
+    routine_started = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -48,7 +50,7 @@ class Timer(QWidget):
         helper.setLayout(helper_layout)
 
         # content
-        self.modus_label = QLabel("Pomodoro")
+        self.modus_label = QLabel("")
         self.modus_label.setAlignment(Qt.AlignCenter)
         self.modus_label.setMinimumSize(100, 50)
         self.modus_label.setMaximumSize(69420, 50)
@@ -120,43 +122,60 @@ class Timer(QWidget):
                     background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:{stop1} rgba(0, 0, 0, 0), stop:{stop2} rgba(255, 255, 255, 255));
                     border-radius: 149px;
                 }"""
+        # setup
+        with open("config.json", "r") as f:
+            config = json.load(f)
+            self.routines = [(QTime.fromString(item["time"], "hh:mm:ss"), item["label"]) for item in config["routines"]]
+
+
+        start_time = self.routines[0][0].toString(Qt.TextDate)
+        start_text = self.routines[0][1]
+        self.progressbar.timer_label.setText(start_time)
+        self.modus_label.setText(start_text)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_timer)
         self.timer.timeout.connect(self.sync_progressbar)
 
+        self.routine_started.connect(self.play_break_sound)
+
+        self.timer_sound = QSoundEffect()
+        self.break_sound = QSoundEffect()
+
         self.stop1 = 1
         self.stop2 = 1
 
-    def start_time_routine(self):
-        routines = [
-            (QTime(0, 25, 0), "Pomodoro"),
-            (QTime(0, 5, 0), "Short Break"),
-            (QTime(0, 25, 0), "Pomodoro"),
-            (QTime(0, 5, 0), "Short Break"),
-            (QTime(0, 25, 0), "Pomodoro"),
-            (QTime(0, 5, 0), "Short Break"),
-            (QTime(0, 25, 0), "Pomodoro"),
-            (QTime(0, 5, 0), "Short Break"),
-            (QTime(0, 25, 0), "Pomodoro"),
-            (QTime(0, 20, 0), "Long Break")
-        ]
+    def start_time_routine(self, routines, index=0):
+        self.reset_progressbar()
 
-        for time, label in routines:
+        if index < len(routines):
+            time, label = routines[index]
             self.time_left = time
             self.modus_label.setText(label)
             self.progressbar.timer_label.setText(time.toString(Qt.TextDate))
 
             self.time_limit_const = - (1 / self.time_left.secsTo(QTime(0, 0)))
+
+            if index != 0:
+                self.routine_started.emit()
+
+            if label == "Short Break" or label == "Long Break":
+                self.timer_sound.setMuted(True)
+                self.timer.timeout.disconnect(self.play_ticking_timer_sound)
+            else:
+                self.timer_sound.setMuted(False)
+                self.timer.timeout.connect(self.play_ticking_timer_sound)
+
             self.timer.start(1000)
 
-            if self.time_left == QTime(0, 0) :
-                self.reset_progressbar()
+            # Use a QTimer to call the next routine
+            QTimer.singleShot(time.msecsSinceStartOfDay(), lambda: self.start_time_routine(routines, index + 1))
 
+        else:
+            QTimer.singleShot(0, lambda: self.start_time_routine(routines, 0))
 
     def sync_progressbar(self):
         self.stop2 = self.stop1 - self.time_limit_const
-        print(self.stop1, self.stop2)
 
         # change stylesheet ## var name issue + based on time issue
         self.new_circle_path_timer_stylesheet = self.circle_path_timer_stylesheet.replace("{stop1}", str(self.stop2)).replace("{stop2}", str(self.stop1))
@@ -177,14 +196,13 @@ class Timer(QWidget):
         self.stop2 = 1
 
     def start_timer(self):
-
         self.grouped_btn_layout.removeWidget(self.start_btn)
         self.start_btn.setParent(None)
 
         self.grouped_btn_layout.addWidget(self.pause_btn)
         self.grouped_btn_layout.addWidget(self.stop_btn)
 
-        self.start_time_routine()
+        self.start_time_routine(self.routines, 0)
 
     def update_timer(self):
         self.time_left = self.time_left.addSecs(-1)
@@ -193,10 +211,10 @@ class Timer(QWidget):
 
         if self.time_left == QTime(0, 0):
             self.timer.stop()
-            print("time is up")
 
     def pause_timer(self):
         self.timer.stop()
+        self.timer_sound.stop()
 
         self.grouped_btn_layout.removeWidget(self.pause_btn)
         self.pause_btn.setParent(None)
@@ -221,6 +239,7 @@ class Timer(QWidget):
 
     def stop_timer(self):
         self.timer.stop()
+        self.timer_sound.stop()
         self.time_left = QTime(0, 25, 0)
         self.progressbar.timer_label.setText("00:25:00")
         self.reset_progressbar()
@@ -235,3 +254,22 @@ class Timer(QWidget):
         self.resume_btn.setParent(None)
 
         self.grouped_btn_layout.addWidget(self.start_btn)
+
+    def play_ticking_timer_sound(self):
+        # get file
+        url = QUrl.fromLocalFile(":/sound/ticking_sound.wav")
+
+        # sound setup
+        self.timer_sound.setSource(url)
+        self.timer_sound.setVolume(100)
+        self.timer_sound.setMuted(False)
+        self.timer_sound.setLoopCount(QSoundEffect.Infinite)
+        self.timer_sound.play()
+
+    def play_break_sound(self):
+        url = QUrl.fromLocalFile(":/sound/change_modus_sound.wav")
+
+        self.break_sound.setSource(url)
+        self.break_sound.setVolume(100)
+        self.break_sound.setMuted(False)
+        self.break_sound.play()
