@@ -1,14 +1,62 @@
 {
-  "routines": [
-    {"time": "00:25:00", "label": "Pomodoro"},
-    {"time": "00:05:00", "label": "Short Break"},
-    {"time": "00:25:00", "label": "Pomodoro"},
-    {"time": "00:05:00", "label": "Short Break"},
-    {"time": "00:25:00", "label": "Pomodoro"},
-    {"time": "00:05:00", "label": "Short Break"},
-    {"time": "00:25:00", "label": "Pomodoro"},
-    {"time": "00:05:00", "label": "Short Break"},
-    {"time": "00:25:00", "label": "Pomodoro"},
-    {"time": "00:20:00", "label": "Long Break"}
-  ]
+    "routines": [
+        {
+            "time": "00:25:00",
+            "label": "Pomodoro"
+        },
+        {
+            "time": "00:05:00",
+            "label": "Short Break"
+        },
+        {
+            "time": "00:25:00",
+            "label": "Pomodoro"
+        },
+        {
+            "time": "00:05:00",
+            "label": "Short Break"
+        },
+        {
+            "time": "00:25:00",
+            "label": "Pomodoro"
+        },
+        {
+            "time": "00:05:00",
+            "label": "Short Break"
+        },
+        {
+            "time": "00:25:00",
+            "label": "Pomodoro"
+        },
+        {
+            "time": "00:05:00",
+            "label": "Short Break"
+        },
+        {
+            "time": "00:25:00",
+            "label": "Pomodoro"
+        },
+        {
+            "time": "00:20:00",
+            "label": "Long Break"
+        }
+    ],
+    "tasks": [
+        {
+            "task": "Task 1",
+            "checked": true
+        },
+        {
+            "task": "Task 2",
+            "checked": false
+        },
+        {
+            "task": "Task 3",
+            "checked": true
+        },
+        {
+            "task": "sadada",
+            "checked": false
+        }
+    ]
 }

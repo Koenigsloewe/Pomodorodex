@@ -80,9 +80,6 @@ class MainWindow(QMainWindow):
 
         self.load_stylesheet()
 
-
-        #self.to_stupid_to_close()
-
     def click_task_btn(self):
         self.content.content_stacked_widget.setCurrentWidget(self.content.page1)
         self.menubar.task_btn.setObjectName("primary_btn")
@@ -99,7 +96,6 @@ class MainWindow(QMainWindow):
 
         self.load_stylesheet()
 
-
     def click_settings_btn(self):
         self.content.content_stacked_widget.setCurrentWidget(self.content.page3)
         self.menubar.task_btn.setObjectName("secondary_btn")
@@ -107,14 +103,6 @@ class MainWindow(QMainWindow):
         self.menubar.settings_btn.setObjectName("primary_btn")
 
         self.load_stylesheet()
-
-    def to_stupid_to_close(self):
-        self.exit_timer = QTimer()
-        self.exit_timer.timeout.connect(self.exit)
-        self.exit_timer.start(30000)
-
-    def exit(self):
-        QApplication.quit()
 
     def load_stylesheet(self):
         with open("app/resources/styles.qss", "r") as qss_file:

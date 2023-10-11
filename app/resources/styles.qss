@@ -80,12 +80,20 @@ QLabel{
     padding-right: 5px;
 }
 
-QCheckBox::indicator:unchecked{
-    background-image: url(:/svg/uncheck-square.svg)
+#text_line_edit{
+    background-color: #2a2929;
+    border: none;
 }
 
-QCheckBox::indicator:unchecked:hover, QCheckBox::indicator:unchecked:pressed{
-    background-image: url(:/svg/check-square.svg);
+#task_finished{
+    background-color: #2a2929;
+    border: none;
+    text-decoration: line-through;
+    color: #808080;
+}
+
+QCheckBox::indicator:unchecked{
+    background-image: url(:/svg/uncheck-square.svg)
 }
 
 QCheckBox::indicator:checked{
@@ -117,11 +125,6 @@ QScrollBar::handle:vertical{
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical{
     height: 0;
     width: 0;
-}
-
-#text_line_edit{
-    background-color: #2a2929;
-    border: none;
 }
 
 #UwU {
