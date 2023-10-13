@@ -1,5 +1,4 @@
 import sys
-from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton
 
@@ -108,6 +107,11 @@ class MainWindow(QMainWindow):
         with open("app/resources/styles.qss", "r") as qss_file:
             style_sheet = qss_file.read()
             self.setStyleSheet(style_sheet)
+
+    def closeEvent(self, event):
+        self.content.page1.save_tasks_for_config()
+        super().closeEvent(event)
+
 
 def main():
     app = QApplication(sys.argv)

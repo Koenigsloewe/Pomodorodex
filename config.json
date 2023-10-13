@@ -41,22 +41,5 @@
             "label": "Long Break"
         }
     ],
-    "tasks": [
-        {
-            "task": "Task 1",
-            "checked": true
-        },
-        {
-            "task": "Task 2",
-            "checked": false
-        },
-        {
-            "task": "Task 3",
-            "checked": true
-        },
-        {
-            "task": "sadada",
-            "checked": false
-        }
-    ]
+    "tasks": []
 }
