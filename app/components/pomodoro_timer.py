@@ -51,6 +51,7 @@ class Timer(QWidget):
 
         # content
         self.modus_label = QLabel("")
+        self.modus_label.setObjectName("headline")
         self.modus_label.setAlignment(Qt.AlignCenter)
         self.modus_label.setMinimumSize(100, 50)
         self.modus_label.setMaximumSize(69420, 50)

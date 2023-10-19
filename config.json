@@ -41,5 +41,44 @@
             "label": "Long Break"
         }
     ],
-    "tasks": []
+    "tasks": [],
+    "statistics": [],
+    "settings": [
+        {
+            "pomodoroDuration": "00:25:00"
+        },
+        {
+            "shortBreakDuration": "00:05:00"
+        },
+        {
+            "longBreakDuration": "00:20:00"
+        },
+        {
+            "pomodoroSession": "4"
+        },
+        {
+            "tickingSound": true
+        },
+        {
+            "customPomodoroSoundSelected": "Ticking Sound"
+        },
+        {
+            "PomodoroSoundVolume": "100"
+        },
+        {
+            "breakSound": false
+        },
+        {
+            "customBreakSoundSelected": "None"
+        },
+        {
+            "BreakSoundVolume": "100"
+        },
+        {
+            "darkMode": true
+        },
+        {
+            "notification": false
+        }
+    ]
 }

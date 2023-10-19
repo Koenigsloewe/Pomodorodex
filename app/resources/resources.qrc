@@ -6,12 +6,20 @@
         <file>svg/play-fill.svg</file>
         <file>svg/stop-fill.svg</file>
         <file>svg/volume-up.svg</file>
+        <file>svg/volume-down.svg</file>
         <file>svg/check-square.svg</file>
         <file>svg/uncheck-square.svg</file>
         <file>svg/edit.svg</file>
         <file>svg/trash-fill.svg</file>
         <file>svg/save.svg</file>
         <file>svg/cancel.svg</file>
+        <file>svg/plus.svg</file>
+        <file>svg/minus-circle.svg</file>
+        <file>svg/plus-circle.svg</file>
+        <file>svg/minus-circle-hover.svg</file>
+        <file>svg/plus-circle-hover.svg</file>
+        <file>svg/minus.svg</file>
+        <file>svg/caret-down.svg</file>
         <file>sound/change_modus_sound.wav</file>
         <file>sound/ticking_sound.wav</file>
         <file>styles.qss</file>
