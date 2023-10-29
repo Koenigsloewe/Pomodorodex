@@ -1,7 +1,9 @@
-from PyQt5.QtCore import Qt, pyqtSignal, QTime, QTimer, QSize, QUrl
+import os
+
+from PyQt5.QtCore import Qt, pyqtSignal, QTime, QTimer, QSize, QUrl, QElapsedTimer
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton
-from PyQt5.QtMultimedia import QSoundEffect
+from PyQt5.QtMultimedia import QSoundEffect, QMediaPlayer, QMediaContent
 import json
 
 try:
@@ -127,21 +129,28 @@ class Timer(QWidget):
         with open("config.json", "r") as f:
             config = json.load(f)
             self.routines = [(QTime.fromString(item["time"], "hh:mm:ss"), item["label"]) for item in config["routines"]]
+            self.timer_sound_int = int(config["settings"][6]["pomodoroSoundVolume"])
+            self.break_sound_int = int(config["settings"][9]["breakSoundVolume"])
+            self.timer_sound_path = config["settings"][5]["customPomodoroSoundSelected"]
+            self.break_sound_path = config["settings"][8]["customBreakSoundSelected"]
 
-
-        start_time = self.routines[0][0].toString(Qt.TextDate)
+        self.start_time = self.routines[0][0].toString(Qt.TextDate)
         start_text = self.routines[0][1]
-        self.progressbar.timer_label.setText(start_time)
+        self.progressbar.timer_label.setText(self.start_time)
         self.modus_label.setText(start_text)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_timer)
         self.timer.timeout.connect(self.sync_progressbar)
 
-        self.routine_started.connect(self.play_break_sound)
+        self.routine_started.connect(self.play_break_sound_notification)
 
-        self.timer_sound = QSoundEffect()
+        self.timer_sound_player = QMediaPlayer()
+        self.play_ticking_timer_sound()
+        self.break_sound_player = QMediaPlayer()
+        self.play_break_sound()
         self.break_sound = QSoundEffect()
+        self.active_player = QMediaPlayer()
 
         self.stop1 = 1
         self.stop2 = 1
@@ -161,11 +170,14 @@ class Timer(QWidget):
                 self.routine_started.emit()
 
             if label == "Short Break" or label == "Long Break":
-                self.timer_sound.setMuted(True)
-                self.timer.timeout.disconnect(self.play_ticking_timer_sound)
-            else:
-                self.timer_sound.setMuted(False)
-                self.timer.timeout.connect(self.play_ticking_timer_sound)
+                self.active_player.stop()
+                self.active_player = self.break_sound_player
+                self.active_player.play()
+
+            elif label == "Pomodoro":
+                self.active_player.stop()
+                self.active_player = self.timer_sound_player
+                self.active_player.play()
 
             self.timer.start(1000)
 
@@ -204,6 +216,7 @@ class Timer(QWidget):
         self.grouped_btn_layout.addWidget(self.stop_btn)
 
         self.start_time_routine(self.routines, 0)
+        self.active_player.play()
 
     def update_timer(self):
         self.time_left = self.time_left.addSecs(-1)
@@ -215,7 +228,8 @@ class Timer(QWidget):
 
     def pause_timer(self):
         self.timer.stop()
-        self.timer_sound.stop()
+        self.active_player.pause()
+        #self.fade_timer.start(100)
 
         self.grouped_btn_layout.removeWidget(self.pause_btn)
         self.pause_btn.setParent(None)
@@ -228,6 +242,7 @@ class Timer(QWidget):
 
     def resume_timer(self):
         self.timer.start(1000)
+        self.active_player.play()
 
         self.grouped_btn_layout.removeWidget(self.resume_btn)
         self.resume_btn.setParent(None)
@@ -240,9 +255,10 @@ class Timer(QWidget):
 
     def stop_timer(self):
         self.timer.stop()
-        self.timer_sound.stop()
-        self.time_left = QTime(0, 25, 0)
-        self.progressbar.timer_label.setText("00:25:00")
+
+        self.active_player.stop()
+
+        self.progressbar.timer_label.setText(self.start_time)
         self.reset_progressbar()
 
         self.grouped_btn_layout.removeWidget(self.pause_btn)
@@ -258,19 +274,33 @@ class Timer(QWidget):
 
     def play_ticking_timer_sound(self):
         # get file
-        url = QUrl.fromLocalFile(":/sound/ticking_sound.wav")
+        media_content = QMediaContent(QUrl.fromLocalFile(self.timer_sound_path))
 
         # sound setup
-        self.timer_sound.setSource(url)
-        self.timer_sound.setVolume(100)
-        self.timer_sound.setMuted(False)
-        self.timer_sound.setLoopCount(QSoundEffect.Infinite)
-        self.timer_sound.play()
+        self.timer_sound_player.setMedia(media_content)
+        self.timer_sound_player.setVolume(self.timer_sound_int)
+        self.timer_sound_player.setMuted(False)
+        self.timer_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
 
     def play_break_sound(self):
+        # get file
+        media_content2 = QMediaContent(QUrl.fromLocalFile(self.break_sound_path))
+
+        # sound setup
+        self.break_sound_player.setMedia(media_content2)
+        self.break_sound_player.setVolume(self.break_sound_int)
+        self.break_sound_player.setMuted(False)
+        self.break_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
+
+    def on_media_status_changed(self, status):
+        if status == QMediaPlayer.EndOfMedia:
+            self.active_player.setPosition(0)
+            self.active_player.play()
+
+    def play_break_sound_notification(self):
         url = QUrl.fromLocalFile(":/sound/change_modus_sound.wav")
 
         self.break_sound.setSource(url)
-        self.break_sound.setVolume(100)
+        self.break_sound.setVolume(self.break_sound_int)
         self.break_sound.setMuted(False)
         self.break_sound.play()

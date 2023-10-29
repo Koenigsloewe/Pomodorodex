@@ -1,7 +1,7 @@
 {
     "routines": [
         {
-            "time": "00:03:00",
+            "time": "00:04:00",
             "label": "Pomodoro"
         },
         {
@@ -9,7 +9,7 @@
             "label": "Short Break"
         },
         {
-            "time": "00:03:00",
+            "time": "00:04:00",
             "label": "Pomodoro"
         },
         {
@@ -17,7 +17,7 @@
             "label": "Short Break"
         },
         {
-            "time": "00:03:00",
+            "time": "00:04:00",
             "label": "Pomodoro"
         },
         {
@@ -25,11 +25,19 @@
             "label": "Short Break"
         },
         {
-            "time": "00:03:00",
+            "time": "00:04:00",
             "label": "Pomodoro"
         },
         {
-            "time": "00:30:00",
+            "time": "00:05:00",
+            "label": "Short Break"
+        },
+        {
+            "time": "00:04:00",
+            "label": "Pomodoro"
+        },
+        {
+            "time": "00:20:00",
             "label": "Long Break"
         }
     ],
@@ -37,13 +45,13 @@
     "statistics": [],
     "settings": [
         {
-            "pomodoroDuration": "00:03:00"
+            "pomodoroDuration": "00:04:00"
         },
         {
             "shortBreakDuration": "00:05:00"
         },
         {
-            "longBreakDuration": "00:30:00"
+            "longBreakDuration": "00:20:00"
         },
         {
             "pomodoroSession": "4"
@@ -52,19 +60,19 @@
             "tickingSound": true
         },
         {
-            "customPomodoroSoundSelected": "C:\\Programmieren\\Python\\Pomodorodex\\app\\components\\..\\resources\\sound\\LAKEY_INSPIRED_-Blue_Boi.mp3"
+            "customPomodoroSoundSelected": "Ticking Sound"
         },
         {
-            "pomodoroSoundVolume": "100"
+            "PomodoroSoundVolume": "100"
         },
         {
             "breakSound": false
         },
         {
-            "customBreakSoundSelected": "C:\\Programmieren\\Python\\Pomodorodex\\app\\components\\..\\resources\\sound\\eine_kleine_nachtmusik.mp3"
+            "customBreakSoundSelected": "None"
         },
         {
-            "breakSoundVolume": "100"
+            "BreakSoundVolume": "100"
         },
         {
             "darkMode": true
