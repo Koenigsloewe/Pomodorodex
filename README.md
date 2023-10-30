@@ -25,7 +25,8 @@ Icons:
 
 Audio:
 
-- https://pixabay.com/sound-effects/ticking-clock-1-27477/
-- https://pixabay.com/sound-effects/service-bell-ring-14610/
-- https://www.youtube.com/watch?v=sGEIRasPwaw
-- https://www.youtube.com/watch?v=FgAYKU-GLoI
+- Ticking Sound (https://pixabay.com/sound-effects/ticking-clock-1-27477/)
+- Notification Sound (https://pixabay.com/sound-effects/service-bell-ring-14610/)
+- LAKEY INSPIRED - Blue Boi (https://www.youtube.com/watch?v=wAukvwLCVbM)
+- Eine kleine Nachtmusik - Mozart (https://archive.org/download/SerenadeNo.13EineKleineNachtmusikK.525)
+- https://ia800906.us.archive.org/12/items/SerenadeNo.13EineKleineNachtmusikK.525/Serenade%20No.%2013%20Eine%20Kleine%20Nachtmusik%2C%20K.525%20-%20I.%20Allegro.mp3

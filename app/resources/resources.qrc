@@ -21,7 +21,6 @@
         <file>svg/minus.svg</file>
         <file>svg/caret-down.svg</file>
         <file>sound/change_modus_sound.wav</file>
-        <file>sound/ticking_sound.wav</file>
         <file>styles.qss</file>
         <file>icons/pomodorodex.ico</file>
     </qresource>
