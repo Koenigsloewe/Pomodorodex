@@ -1,5 +1,9 @@
+import json
 import sys
+
+from PyQt5.QtCore import QUrl, QTime
 from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtMultimedia import QMediaContent
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton
 
 try:
@@ -36,8 +40,8 @@ class MainWindow(QMainWindow):
         layout_for_splitting_timer_with_management_tool.setContentsMargins(0, 0, 0, 0)
 
         # create pomodoro timer instance
-        pomodoro_timer = Timer()
-        layout_for_splitting_timer_with_management_tool.addWidget(pomodoro_timer)
+        self.pomodoro_timer = Timer()
+        layout_for_splitting_timer_with_management_tool.addWidget(self.pomodoro_timer)
 
         # create management tool instance
         management_tool_widget = QWidget()
@@ -72,10 +76,30 @@ class MainWindow(QMainWindow):
         self.content = Content()
         helper2_layout.addWidget(self.content)
 
+        # init for load_stylesheet
+        with open("config.json", "r") as f:
+            self.config = json.load(f)
+            self.dark_mode_bool = self.config["settings"][10]["darkMode"]
+
         # btn connections
         self.menubar.task_btn.clicked.connect(self.click_task_btn)
         self.menubar.statistics_btn.clicked.connect(self.click_statistics_btn)
         self.menubar.settings_btn.clicked.connect(self.click_settings_btn)
+
+        self.content.page3.pomodoro_sound_changed.connect(lambda value: self.pomodoro_timer.timer_sound_player.setVolume(value))
+        self.content.page3.break_sound_changed.connect(lambda value: self.pomodoro_timer.break_sound_player.setVolume(value))
+
+        self.content.page3.ticking_sound_bool_changed.connect(lambda set_bool: self.pomodoro_timer.timer_sound_player.setMuted(set_bool))
+        self.content.page3.break_sound_bool_changed.connect(lambda set_bool: self.pomodoro_timer.break_sound_player.setMuted(set_bool))
+        self.content.page3.notification_changed.connect(lambda set_bool: self.pomodoro_timer.break_sound.setMuted(set_bool))
+        self.content.page3.dark_mode_changed.connect(lambda set_bool: self.change_stylesheet(set_bool))
+
+        self.content.page3.timer_mediaplayer_sound_changed.connect(
+            lambda path: self.timer_sound_changed(path))
+        self.content.page3.break_mediaplayer_sound_changed.connect(
+            lambda path: self.pomodoro_timer.break_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path))))
+
+        self.content.page3.routine_changed.connect(lambda mylist: self.change_routine())
 
         self.load_stylesheet()
 
@@ -104,9 +128,39 @@ class MainWindow(QMainWindow):
         self.load_stylesheet()
 
     def load_stylesheet(self):
-        with open("app/resources/styles.qss", "r") as qss_file:
-            style_sheet = qss_file.read()
-            self.setStyleSheet(style_sheet)
+        if self.dark_mode_bool:
+            with open("app/resources/styles.qss", "r") as qss_file:
+                style_sheet = qss_file.read()
+                self.setStyleSheet(style_sheet)
+        elif not self.dark_mode_bool:
+            with open("app/resources/lightmode.qss", "r") as qss_file:
+                style_sheet = qss_file.read()
+                self.setStyleSheet(style_sheet)
+
+    def change_stylesheet(self, value):
+        self.dark_mode_bool = value
+        self.load_stylesheet()
+
+    def change_routine(self):
+        self.routines = []
+        self.pomodoro_timer.start_time_routine(self.routines)
+
+        with open("config.json", "r") as f:
+            config = json.load(f)
+            self.routines = [(QTime.fromString(item["time"], "hh:mm:ss"), item["label"]) for item in config["routines"]]
+
+        #self.pomodoro_timer.start_time_routine(self.routines)
+        self.pomodoro_timer.start_timer(self.routines)
+
+    def timer_sound_changed(self, path):
+        self.pomodoro_timer.timer_sound_player.stop()
+        self.pomodoro_timer.timer_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+        self.pomodoro_timer.timer_sound_player.play()
+        
+    def break_sound_changed(self, path):
+        self.pomodoro_timer.break_sound_player.stop()
+        self.pomodoro_timer.break_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+        self.pomodoro_timer.break_sound_player.play()
 
     def closeEvent(self, event):
         self.content.page1.save_tasks_for_config()

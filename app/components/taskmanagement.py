@@ -155,9 +155,17 @@ class TaskManagement(QWidget):
                 self.load_stylesheet()
 
     def load_stylesheet(self):
-        with open("app/resources/styles.qss", "r") as qss_file:
-            style_sheet = qss_file.read()
-            self.setStyleSheet(style_sheet)
+        with open("config.json", "r") as f:
+            self.config = json.load(f)
+            self.dark_mode_bool = self.config["settings"][10]["darkMode"]
+        if self.dark_mode_bool:
+            with open("app/resources/styles.qss", "r") as qss_file:
+                style_sheet = qss_file.read()
+                self.setStyleSheet(style_sheet)
+        elif not self.dark_mode_bool:
+            with open("app/resources/lightmode.qss", "r") as qss_file:
+                style_sheet = qss_file.read()
+                self.setStyleSheet(style_sheet)
 
     def load_tasks_from_config(self):
         with open("config.json", "r") as f:

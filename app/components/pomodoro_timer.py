@@ -115,12 +115,6 @@ class Timer(QWidget):
         self.resume_btn.setMinimumSize(120, 50)
         self.resume_btn.setMaximumSize(120, 50)
 
-        # connections
-        self.start_btn.clicked.connect(self.start_timer)
-        self.pause_btn.clicked.connect(self.pause_timer)
-        self.stop_btn.clicked.connect(self.stop_timer)
-        self.resume_btn.clicked.connect(self.resume_timer)
-
         self.circle_path_timer_stylesheet = """#circle_path{
                     background-color: qconicalgradient(cx:0.5, cy:0.5, angle:90, stop:{stop1} rgba(0, 0, 0, 0), stop:{stop2} rgba(255, 255, 255, 255));
                     border-radius: 149px;
@@ -133,6 +127,9 @@ class Timer(QWidget):
             self.break_sound_int = int(config["settings"][9]["breakSoundVolume"])
             self.timer_sound_path = config["settings"][5]["customPomodoroSoundSelected"]
             self.break_sound_path = config["settings"][8]["customBreakSoundSelected"]
+            self.timer_sound_bool = config["settings"][4]["tickingSound"]
+            self.break_sound_bool = config["settings"][7]["breakSound"]
+            self.notification_bool = config["settings"][11]["notification"]
 
         self.start_time = self.routines[0][0].toString(Qt.TextDate)
         start_text = self.routines[0][1]
@@ -154,6 +151,12 @@ class Timer(QWidget):
 
         self.stop1 = 1
         self.stop2 = 1
+        # connections
+        self.start_btn.clicked.connect(lambda : self.start_timer(self.routines))
+        self.pause_btn.clicked.connect(self.pause_timer)
+        self.stop_btn.clicked.connect(self.stop_timer)
+        self.resume_btn.clicked.connect(self.resume_timer)
+
 
     def start_time_routine(self, routines, index=0):
         self.reset_progressbar()
@@ -172,14 +175,12 @@ class Timer(QWidget):
             if label == "Short Break" or label == "Long Break":
                 self.active_player.stop()
                 self.active_player = self.break_sound_player
-                self.active_player.play()
+                #self.active_player.play()
 
             elif label == "Pomodoro":
                 self.active_player.stop()
                 self.active_player = self.timer_sound_player
-                self.active_player.play()
-
-            self.timer.start(1000)
+                #self.active_player.play()
 
             # Use a QTimer to call the next routine
             QTimer.singleShot(time.msecsSinceStartOfDay(), lambda: self.start_time_routine(routines, index + 1))
@@ -208,14 +209,15 @@ class Timer(QWidget):
         self.stop1 = 1
         self.stop2 = 1
 
-    def start_timer(self):
+    def start_timer(self, routine):
         self.grouped_btn_layout.removeWidget(self.start_btn)
         self.start_btn.setParent(None)
 
         self.grouped_btn_layout.addWidget(self.pause_btn)
         self.grouped_btn_layout.addWidget(self.stop_btn)
 
-        self.start_time_routine(self.routines, 0)
+        self.start_time_routine(routine, 0)
+        self.timer.start(1000)
         self.active_player.play()
 
     def update_timer(self):
@@ -279,7 +281,7 @@ class Timer(QWidget):
         # sound setup
         self.timer_sound_player.setMedia(media_content)
         self.timer_sound_player.setVolume(self.timer_sound_int)
-        self.timer_sound_player.setMuted(False)
+        self.timer_sound_player.setMuted(self.timer_sound_bool)
         self.timer_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
 
     def play_break_sound(self):
@@ -289,7 +291,7 @@ class Timer(QWidget):
         # sound setup
         self.break_sound_player.setMedia(media_content2)
         self.break_sound_player.setVolume(self.break_sound_int)
-        self.break_sound_player.setMuted(False)
+        self.break_sound_player.setMuted(self.break_sound_bool)
         self.break_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
 
     def on_media_status_changed(self, status):
@@ -302,5 +304,11 @@ class Timer(QWidget):
 
         self.break_sound.setSource(url)
         self.break_sound.setVolume(self.break_sound_int)
-        self.break_sound.setMuted(False)
+        self.break_sound.setMuted(self.notification_bool)
         self.break_sound.play()
+
+    def set_volume(self, value):
+        if self.active_player == self.timer_sound_player:
+            self.active_player.setVolume(value)
+        elif self.active_player == self.break_sound_player:
+            self.active_player.setVolume(value)

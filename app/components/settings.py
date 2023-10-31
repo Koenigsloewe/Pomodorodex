@@ -1,9 +1,10 @@
 import json
+import os
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, \
-    QPushButton, QScrollArea, QSlider, QSpinBox, QComboBox, QSizePolicy, QTextBrowser, QFrame
+    QPushButton, QScrollArea, QSlider, QSpinBox, QComboBox, QSizePolicy, QTextBrowser, QFrame, QFileDialog
 
 try:
     from custom_widgets import SwitchButton
@@ -11,25 +12,49 @@ except ModuleNotFoundError:
     from .custom_widgets import SwitchButton
 
 TIME_VALUES = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 45, 60]
+SETTING_INDEX_MAP = {
+    "Pomodoro": [0, "pomodoroDuration"],
+    "Short Break": [1, "shortBreakDuration"],
+    "Long Break": [2, "longBreakDuration"],
+    "Pomodoro Session": [3, "pomodoroSession"],
+    "Ticking Sound": [4, "tickingSound"],
+    "Custom Pomodoro Sound Selected": [5, "customPomodoroSoundSelected"],
+    "Pomodoro Sound Volume": [6, "pomodoroSoundVolume"],
+    "Break Sound": [7, "breakSound"],
+    "Custom Break Sound Selected": [8, "customBreakSoundSelected"],
+    "Break Sound Volume": [9, "breakSoundVolume"],
+    "Dark Mode": [10, "darkMode"],
+    "Notification": [11, "notification"]
+}
 
 
 class Settings(QWidget):
+    pomodoro_sound_changed = pyqtSignal(int)
+    break_sound_changed = pyqtSignal(int)
+    ticking_sound_bool_changed = pyqtSignal(bool)
+    break_sound_bool_changed = pyqtSignal(bool)
+    notification_changed = pyqtSignal(bool)
+    dark_mode_changed = pyqtSignal(bool)
+    timer_mediaplayer_sound_changed = pyqtSignal(str)
+    break_mediaplayer_sound_changed = pyqtSignal(str)
+    routine_changed = pyqtSignal(bool)
+
     def __init__(self):
         super().__init__()
         with open("config.json", "r") as f:
-            config = json.load(f)
-        pomodoro_duration_int = int(config["settings"][0]["pomodoroDuration"].split(":")[1])
-        short_break_duration_int = int(config["settings"][1]["shortBreakDuration"].split(":")[1])
-        long_break_duration_int = int(config["settings"][2]["longBreakDuration"].split(":")[1])
-        pomodoro_session_int = int(config["settings"][3]["pomodoroSession"])
-        ticking_sound_bool = config["settings"][4]["tickingSound"]
-        custom_pomodoro_sound_selected_string = config["settings"][5]["customPomodoroSoundSelected"]
-        pomodoro_sound_volume = int(config["settings"][6]["PomodoroSoundVolume"])
-        break_sound_bool = config["settings"][7]["breakSound"]
-        custom_break_sound_selected_string = config["settings"][8]["customBreakSoundSelected"]
-        break_sound_volume = int(config["settings"][9]["BreakSoundVolume"])
-        dark_mode_bool = config["settings"][10]["darkMode"]
-        notification_bool = config["settings"][11]["notification"]
+            self.config = json.load(f)
+        pomodoro_duration_int = int(self.config["settings"][0]["pomodoroDuration"].split(":")[1])
+        short_break_duration_int = int(self.config["settings"][1]["shortBreakDuration"].split(":")[1])
+        long_break_duration_int = int(self.config["settings"][2]["longBreakDuration"].split(":")[1])
+        pomodoro_session_int = int(self.config["settings"][3]["pomodoroSession"])
+        ticking_sound_bool = self.config["settings"][4]["tickingSound"]
+        custom_pomodoro_sound_selected_string = self.config["settings"][5]["customPomodoroSoundSelected"]
+        pomodoro_sound_volume = int(self.config["settings"][6]["pomodoroSoundVolume"])
+        break_sound_bool = self.config["settings"][7]["breakSound"]
+        custom_break_sound_selected_string = self.config["settings"][8]["customBreakSoundSelected"]
+        break_sound_volume = int(self.config["settings"][9]["breakSoundVolume"])
+        dark_mode_bool = self.config["settings"][10]["darkMode"]
+        notification_bool = self.config["settings"][11]["notification"]
 
         layout = QVBoxLayout()
         layout.setContentsMargins(30, 30, 30, 30)
@@ -153,6 +178,7 @@ class Settings(QWidget):
         self.custom_sound_combobox.setMaximumHeight(50)
         self.custom_sound_combobox.addItem("None")
         self.custom_sound_combobox.addItem("Ticking Sound")
+        self.custom_sound_combobox.addItem("LoFi")
         self.custom_sound_combobox.insertSeparator(200)
         self.custom_sound_combobox.addItem("Custom Music")
         self.custom_sound_combobox.setCurrentText(custom_pomodoro_sound_selected_string)
@@ -174,6 +200,8 @@ class Settings(QWidget):
         self.volume_slider = QSlider()
         self.volume_slider.setOrientation(Qt.Horizontal)
         self.volume_slider.setRange(0, 100)
+        self.volume_slider.setTickInterval(1)
+        self.volume_slider.setValue(pomodoro_sound_volume)
         sound_settings_widget_layout.addWidget(self.volume_slider, 5, 0, 1, 2)
 
         break_volume_label = QLabel("Break Sound")
@@ -191,7 +219,7 @@ class Settings(QWidget):
         self.custom_break_sound_combobox.setMinimumHeight(50)
         self.custom_break_sound_combobox.setMaximumHeight(50)
         self.custom_break_sound_combobox.addItem("None")
-        self.custom_break_sound_combobox.addItem("LoFi Music")
+        self.custom_break_sound_combobox.addItem("Classic")
         self.custom_break_sound_combobox.insertSeparator(200)
         self.custom_break_sound_combobox.addItem("Custom Music")
         self.custom_break_sound_combobox.setCurrentText(custom_break_sound_selected_string)
@@ -213,6 +241,8 @@ class Settings(QWidget):
         self.break_volume_slider = QSlider()
         self.break_volume_slider.setOrientation(Qt.Horizontal)
         self.break_volume_slider.setRange(0, 100)
+        self.break_volume_slider.setTickInterval(1)
+        self.break_volume_slider.setValue(break_sound_volume)
         sound_settings_widget_layout.addWidget(self.break_volume_slider, 10, 0, 1, 2)
 
         """desktop widget setup"""
@@ -256,54 +286,190 @@ class Settings(QWidget):
         about_settings_widget_layout.addWidget(about_headline_label)
 
         author = "Königslöwe"
-        version = "alpha"
-        text = f"""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed volutpat risus non tellus faucibus condimentum. Aliquam sit amet pretium risus, ut vehicula erat. Aliquam pulvinar neque sollicitudin suscipit feugiat. Aenean suscipit quam a dignissim efficitur. Integer id lacus vitae diam mollis mattis vitae sit amet lacus. Fusce rutrum, metus eu condimentum pharetra, est eros porta nisl, vel feugiat nibh ex id sem. Donec condimentum suscipit urna at tempor. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec dignissim enim sit amet vestibulum lacinia. Etiam dui erat, tristique sit amet laoreet eget, fermentum in nisl. Donec sollicitudin fringilla neque nec molestie.\n \n by {author}, Version: {version}"""
+        version = "0.1"
+        about_text = f"""
+Welcome to Pomodorodex - Your Ultimate Productivity Companion!
 
-        about_browser = QLabel(text)
-        about_browser.setObjectName("about")
-        about_browser.setWordWrap(True)
-        about_settings_widget_layout.addWidget(about_browser)
+Version: {version}
+Created by {author}
+Copywriting assistance by Chat-GPT 3.5
+
+Pomodorodex is more than just a productivity app; it's a tool I designed to help boost my own focus and productivity. I believe that effective time management and focused work sessions are crucial for achieving our goals.
+
+Key Features:
+
+- 🍅 Pomodoro Timer: Customize work intervals and breaks to suit your workflow, ensuring you stay in the zone.
+
+- 📋 Task Management: Organize your tasks, projects, and to-do lists seamlessly, so you can focus on what matters most.
+
+- 📊 Stats Tracking: Gain valuable insights into your work habits. Track your productivity trends over time, allowing you to make informed decisions for continuous improvement.
+
+Open Source Acknowledgment:
+
+Pomodorodex uses the PyQt5 framework for its intuitive user interface. Big thanks to the PyQt5 development team for their exceptional work!
+
+License:
+
+Pomodorodex is a personal project, not intended for commercial use.
+
+Thank you for using Pomodorodex! I hope it helps you on your productivity journey.
+
+{author}
+        """
+
+        about_label = QLabel(about_text)
+        about_label.setObjectName("about")
+        about_label.setWordWrap(True)
+        about_settings_widget_layout.addWidget(about_label)
 
         self.pomodoro_duration_slider.valueChanged.connect(
-            lambda: self.time_slider_changed(self.pomodoro_duration_slider, self.pomodoro_duration_display_label))
+            lambda: self.time_slider_changed(self.pomodoro_duration_slider, self.pomodoro_duration_display_label, "Pomodoro"))
         self.short_break_duration_slider.valueChanged.connect(
-            lambda: self.time_slider_changed(self.short_break_duration_slider, self.short_break_duration_display_label))
+            lambda: self.time_slider_changed(self.short_break_duration_slider, self.short_break_duration_display_label, "Short Break"))
         self.long_break_duration_slider.valueChanged.connect(
-            lambda: self.time_slider_changed(self.long_break_duration_slider, self.long_break_duration_display_label))
+            lambda: self.time_slider_changed(self.long_break_duration_slider, self.long_break_duration_display_label, "Long Break"))
         self.volume_slider.valueChanged.connect(
-            lambda: self.volume_slider_changed(self.volume_slider))
+            lambda: self.volume_slider_changed(self.volume_slider, "Pomodoro Sound Volume"))
         self.break_volume_slider.valueChanged.connect(
-            lambda: self.volume_slider_changed(self.break_volume_slider))
+            lambda: self.volume_slider_changed(self.break_volume_slider, "Break Sound Volume"))
 
         self.pomodoro_sessions_before_long_break_spinbox.valueChanged.connect(
             lambda: self.spinbox_changed(self.pomodoro_sessions_before_long_break_spinbox))
 
-        self.ticking_sound_switch_btn.stateChanged.connect(self.switchbutton_changed)
-        self.break_sound_switch_btn.stateChanged.connect(self.switchbutton_changed)
-        self.dark_mode_switch_btn.stateChanged.connect(self.switchbutton_changed)
-        self.notification_switch_btn.stateChanged.connect(self.switchbutton_changed)
+        self.ticking_sound_switch_btn.stateChanged.connect(
+            lambda state, key="Ticking Sound": self.switchbutton_changed(state, key))
+        self.break_sound_switch_btn.stateChanged.connect(
+            lambda state, key="Break Sound": self.switchbutton_changed(state, key))
+        self.dark_mode_switch_btn.stateChanged.connect(
+            lambda state, key="Dark Mode": self.switchbutton_changed(state, key))
+        self.notification_switch_btn.stateChanged.connect(
+            lambda state, key="Notification": self.switchbutton_changed(state, key))
 
-        self.custom_sound_combobox.currentIndexChanged.connect(self.combobox_changed)
-        self.custom_break_sound_combobox.currentIndexChanged.connect(self.combobox_changed)
+        self.custom_sound_combobox.currentIndexChanged.connect(
+            lambda index, key="Custom Pomodoro Sound Selected": self.combobox_changed(self.custom_sound_combobox.itemText(index), key))
+        self.custom_break_sound_combobox.currentIndexChanged.connect(
+            lambda index, key="Custom Break Sound Selected": self.combobox_changed(self.custom_break_sound_combobox.itemText(index), key))
 
-    def time_slider_changed(self, slider, label):
-        value = TIME_VALUES[slider.value()]
-        label.setText(f"{value} min")
+    def time_slider_changed(self, slider, label, setting_key):
+        with open("config.json", "r+") as f:
+            config = json.load(f)
+            value = TIME_VALUES[slider.value()]
+            minutes = TIME_VALUES[slider.value()]
+            hours = minutes // 60
+            minutes %= 60
+            formatted_time = f"{hours:02d}:{minutes:02d}:00"
+            label.setText(f"{value} min")
+            for routine in config["routines"]:
+                if routine["label"] == setting_key:
+                    routine["time"] = formatted_time
 
-    def volume_slider_changed(self, slider):
-        print(slider.value())
+            index, setting = SETTING_INDEX_MAP[setting_key]
+            config["settings"][index][setting] = formatted_time
+            f.seek(0)
+            json.dump(config, f, indent=4)
+            f.truncate()
+
+            self.routine_changed.emit(True)
+
+    def volume_slider_changed(self, slider, setting_key):
+        with open("config.json", "r+") as f:
+            config = json.load(f)
+            value = (slider.value())
+            index, setting = SETTING_INDEX_MAP[setting_key]
+            config["settings"][index][setting] = f"{value}"
+
+            f.seek(0)
+            json.dump(config, f, indent=4)
+            f.truncate()
+        if setting_key == "Pomodoro Sound Volume":
+            slider.valueChanged.connect(self.pomodoro_sound_changed.emit)
+        elif setting_key == "Break Sound Volume":
+            slider.valueChanged.connect(self.break_sound_changed.emit)
 
     def spinbox_changed(self, spinbox):
-        print(spinbox.value())
+        print(spinbox.value())  # Verify that the correct value is being received
 
-    def switchbutton_changed(self, state):
-        print(state)
-
-    def combobox_changed(self):
-        sender = self.sender()
-        selected_item = sender.currentText()
-        print(f"{selected_item}")
-
-    def rewrite_json(self):
-        with open("self.config.json", "r") as f:
+        with open("config.json", "r+") as f:
             config = json.load(f)
+
+            # Clear the existing routines
+            config['routines'] = []
+
+            # Add new routines based on spinbox value
+            for i in range(spinbox.value()):
+                config['routines'].append({"time": "00:25:00", "label": "Pomodoro"})
+                config['routines'].append({"time": "00:05:00", "label": "Short Break"})
+
+                if (i + 1) % spinbox.value() == 0:  # Add a Long Break after every 4 Pomodoros
+                    config['routines'].pop()  # Remove the last Short Break
+                    config['routines'].append({"time": "00:30:00", "label": "Long Break"})
+
+            # Update the pomodoro session setting
+            config['settings'][3]['pomodoroSession'] = str(spinbox.value())
+
+            # Save the modified config back to the file
+            f.seek(0)
+            json.dump(config, f, indent=4)
+            f.truncate()
+
+    def switchbutton_changed(self, state, setting_key):
+        with open("config.json", "r+") as f:
+            config = json.load(f)
+            index, setting = SETTING_INDEX_MAP[setting_key]
+            if state == 2:
+                config["settings"][index][setting] = True
+                value = True
+            elif state == 0:
+                config["settings"][index][setting] = False
+                value = False
+            f.seek(0)
+            json.dump(config, f, indent=4)
+            f.truncate()
+        print(f"Setting '{setting_key}' state changed to {state}")
+        if setting_key == "Ticking Sound":
+            self.ticking_sound_bool_changed.emit(value)
+        elif setting_key == "Break Sound":
+            self.break_sound_bool_changed.emit(value)
+        elif setting_key == "Notification":
+            self.notification_changed.emit(value)
+        elif setting_key == "Dark Mode":
+            self.dark_mode_changed.emit(value)
+
+    def combobox_changed(self, text, setting_key):
+        with open("config.json", "r+") as f:
+            config = json.load(f)
+            index_setting, setting = SETTING_INDEX_MAP[setting_key]
+
+            if text == "None":
+                path = "None"
+                config["settings"][index_setting][setting] = path
+
+            elif text == "Ticking Sound":
+                path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\ticking_sound.mp3')
+                config["settings"][index_setting][setting] = path
+                self.timer_mediaplayer_sound_changed.emit(path)
+
+            elif text == "LoFi":
+                path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\LAKEY_INSPIRED_-Blue_Boi.mp3')
+                config["settings"][index_setting][setting] = path
+                self.timer_mediaplayer_sound_changed.emit(path)
+
+            elif text == "Classic":
+                path = os.path.join(os.path.dirname(os.path.abspath(__file__)),  r'..\resources\sound\eine_kleine_nachtmusik.mp3')
+                config["settings"][index_setting][setting] = path
+
+            elif text == "Custom Music":
+                option = QFileDialog.Options()
+                option |= QFileDialog.ReadOnly
+                path, _ = QFileDialog.getOpenFileName(self, "Select Audio File", '/', "Audio Files (*.mp3);;All Files (*)", options=option)
+
+                config["settings"][index_setting][setting] = path
+
+            if setting_key == "Custom Pomodoro Sound Selected":
+                self.timer_mediaplayer_sound_changed.emit(path)
+            elif setting_key == "Custom Break Sound Selected":
+                self.break_mediaplayer_sound_changed.emit(path)
+
+            f.seek(0)
+            json.dump(config, f, indent=4)
+            f.truncate()
