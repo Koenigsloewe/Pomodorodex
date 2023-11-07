@@ -14,6 +14,12 @@ Key Features:
 
 Discover the power of Pomodorodex and take control of your productivity like never before. 
 
+Issues:
+
+-Pomodoro Timer continues running while the timer is paused.
+-Task manager only allows the last task to be edited.
+-The switch buttons are set up in a mirrored-inverted.
+-Settings spinboxes play a song directly after being selected.
 
 Sources I used:
 
