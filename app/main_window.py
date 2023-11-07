@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setWindowTitle("Pomodorodex")
-        self.setMinimumSize(1280, 720)
+        self.setMinimumSize(1600, 900)
         self.setWindowIcon(QIcon(":/icons/pomodorodex.ico"))
 
         # create centralWidget
@@ -100,6 +100,8 @@ class MainWindow(QMainWindow):
             lambda path: self.pomodoro_timer.break_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path))))
 
         self.content.page3.routine_changed.connect(lambda mylist: self.change_routine())
+
+        self.content.page2.stylesheet_changed.connect(lambda: self.load_stylesheet())
 
         self.load_stylesheet()
 
