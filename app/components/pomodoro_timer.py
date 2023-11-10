@@ -1,10 +1,9 @@
-import os
+import json
 
 from PyQt5.QtCore import Qt, pyqtSignal, QTime, QTimer, QSize, QUrl, QElapsedTimer
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton
 from PyQt5.QtMultimedia import QSoundEffect, QMediaPlayer, QMediaContent
-import json
 
 try:
     from progress_bar_timer import ProgressBar
@@ -149,6 +148,10 @@ class Timer(QWidget):
         self.break_sound = QSoundEffect()
         self.active_player = QMediaPlayer()
 
+        self.start_time_phase = []
+        self.pomodoro_durations = []
+        self.break_durations = []
+
         self.stop1 = 1
         self.stop2 = 1
         # connections
@@ -156,7 +159,6 @@ class Timer(QWidget):
         self.pause_btn.clicked.connect(self.pause_timer)
         self.stop_btn.clicked.connect(self.stop_timer)
         self.resume_btn.clicked.connect(self.resume_timer)
-
 
     def start_time_routine(self, routines, index=0):
         self.reset_progressbar()
@@ -169,18 +171,30 @@ class Timer(QWidget):
 
             self.time_limit_const = - (1 / self.time_left.secsTo(QTime(0, 0)))
 
+            self.start_time_phase.append(QTime.currentTime())
+            print(self.start_time_phase)
+
+            try:
+                self.difference = self.start_time_phase[-2].secsTo(self.start_time_phase[-1]) / 60
+                print(self.difference)
+            except IndexError as e:
+                self.difference = 0
+
             if index != 0:
                 self.routine_started.emit()
 
             if label == "Short Break" or label == "Long Break":
                 self.active_player.stop()
                 self.active_player = self.break_sound_player
-                #self.active_player.play()
+                self.pomodoro_durations.append(self.difference)
 
             elif label == "Pomodoro":
                 self.active_player.stop()
                 self.active_player = self.timer_sound_player
-                #self.active_player.play()
+                self.break_durations.append(self.difference)
+
+            print(self.start_time_phase)
+            print(self.pomodoro_durations, self.break_durations)
 
             # Use a QTimer to call the next routine
             QTimer.singleShot(time.msecsSinceStartOfDay(), lambda: self.start_time_routine(routines, index + 1))
@@ -273,6 +287,21 @@ class Timer(QWidget):
         self.resume_btn.setParent(None)
 
         self.grouped_btn_layout.addWidget(self.start_btn)
+
+        if self.start_time_phase is not None:
+            end_time = QTime.currentTime()
+            print(end_time)
+            print(self.start_time_phase[-1])
+            duration = self.start_time_phase[-1].secsTo(end_time) / 60
+            print(duration)
+            self.start_time_phase = None
+
+            # Depending on the phase, append the duration to the corresponding list
+            if self.modus_label.text() == "Pomodoro":
+                self.pomodoro_durations.append(duration)
+            elif self.modus_label.text() == "Short Break" or self.modus_label.text() == "Long Break":
+                self.break_durations.append(duration)
+            print(self.pomodoro_durations, self.break_durations)
 
     def play_ticking_timer_sound(self):
         # get file

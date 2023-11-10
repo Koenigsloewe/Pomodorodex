@@ -1,5 +1,7 @@
 import json
+import sqlite3
 import sys
+from datetime import datetime
 
 from PyQt5.QtCore import QUrl, QTime
 from PyQt5.QtGui import QIcon, QFont
@@ -101,7 +103,7 @@ class MainWindow(QMainWindow):
 
         self.content.page3.routine_changed.connect(lambda mylist: self.change_routine())
 
-        self.content.page2.stylesheet_changed.connect(lambda: self.load_stylesheet())
+       # self.content.page2.stylesheet_changed.connect(lambda: self.load_stylesheet())
 
         self.load_stylesheet()
 
@@ -164,8 +166,38 @@ class MainWindow(QMainWindow):
         self.pomodoro_timer.break_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
         self.pomodoro_timer.break_sound_player.play()
 
+    def update_or_insert_data(self, date, focus_time, break_time):
+        conn = sqlite3.connect("app/components/pomodorodex.db")
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM pomodoro_sessions WHERE date = ?', (date,))
+        existing_data = cursor.fetchone()
+
+        if existing_data:
+            new_focus_time = float(existing_data[2]) + round(focus_time, 3)
+            new_break_time = float(existing_data[3]) + round(break_time, 3)
+            cursor.execute('''
+                            UPDATE pomodoro_sessions
+                            SET focus_time = ?, break_time = ?
+                            WHERE date = ?
+                        ''', (new_focus_time, new_break_time, date))
+        else:
+            self.cursor.execute('''
+                INSERT INTO pomodoro_sessions (date, focus_time, break_time)
+                VALUES (?, ?, ?)
+            ''', (date, focus_time, break_time))
+
+        conn.commit()
+        conn.close()
+
     def closeEvent(self, event):
         self.content.page1.save_tasks_for_config()
+
+        date = datetime.now().strftime('%Y-%m-%d')
+        focus_time = sum(self.pomodoro_timer.pomodoro_durations)
+        break_time = sum(self.pomodoro_timer.break_durations)
+        print(date, focus_time, break_time)
+        self.update_or_insert_data(date, focus_time, break_time)
+
         super().closeEvent(event)
 
 

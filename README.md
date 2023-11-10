@@ -16,10 +16,15 @@ Discover the power of Pomodorodex and take control of your productivity like nev
 
 Issues:
 
--Pomodoro Timer continues running while the timer is paused.
--Task manager only allows the last task to be edited.
--The switch buttons are set up in a mirrored-inverted.
--Settings spinboxes play a song directly after being selected.
+- Pomodoro Timer continues running while the timer is paused.
+- Task manager only allows the last task to be edited.
+- Light mode does not proper show.
+- Slider starts Timer while scrolling.
+- The switch buttons are set up in a mirrored-inverted.
+- Settings spinboxes play a song directly after being selected.
+- Tasks should be outsourced to db.
+- Statistics show buttons does not update itself based on the user selection:
+- Statistics should be updated in real time.
 
 Sources I used:
 

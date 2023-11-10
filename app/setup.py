@@ -1,4 +1,6 @@
 import os
+import sqlite3
+
 
 def generate_config_file():
     try:
@@ -7,7 +9,6 @@ def generate_config_file():
 
     except FileNotFoundError:
         with open("config.json", "w") as f:
-            print("no file exists")
             f.write("""{
     "routines": [
         {
@@ -204,3 +205,19 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical{
 #a {
     background-color: yellow;
 }""")
+
+def generate_db():
+    try:
+        with open("app/components/pomodorodex.db") as f:
+            pass
+    except FileNotFoundError:
+        with sqlite3.connect("app/components/pomodorodex.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE pomodoro_sessions (
+                    date TEXT PRIMARY KEY,
+                    focus_time INTEGER,
+                    break_time INTEGER
+                )
+            ''')
+            conn.commit()
