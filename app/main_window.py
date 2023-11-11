@@ -103,7 +103,7 @@ class MainWindow(QMainWindow):
 
         self.content.page3.routine_changed.connect(lambda mylist: self.change_routine())
 
-       # self.content.page2.stylesheet_changed.connect(lambda: self.load_stylesheet())
+        self.content.page2.stylesheet_changed.connect(self.load_stylesheet)
 
         self.load_stylesheet()
 

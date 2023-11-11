@@ -1,5 +1,3 @@
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton, QStackedWidget
 
 try:

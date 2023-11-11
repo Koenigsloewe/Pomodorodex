@@ -1,43 +1,56 @@
 # Pomodorodex
- 
-Introducing Pomodorodex - Your Ultimate Productivity Companion!
+----------------------
+
+**Your Ultimate Productivity Companion!**
+
+<img src="ui/Pomodorodex.png" width="100">
 
 Pomodorodex is a versatile productivity application designed to enhance your focus, productivity, and time management. With its intuitive interface and powerful features, Pomodorodex is the ideal tool for professionals, students, and anyone looking to maximize their work efficiency.
 
-Key Features:
+## Key Features:
+----------------------
 
-🍅 Pomodoro Timer: Boost your productivity with the renowned Pomodoro Technique. Set customized time intervals for focused work sessions and rejuvenating breaks, ensuring optimal productivity throughout the day.
+### 🍅 Pomodoro Timer
+Boost your productivity with the renowned Pomodoro Technique. Set customized time intervals for focused work sessions and rejuvenating breaks, ensuring optimal productivity throughout the day.
 
-📋 Task Management: Seamlessly organize your tasks, projects, and to-do lists within Pomodorodex. Prioritize, categorize, and track your progress effortlessly, ensuring that you stay on top of your goals.
+### 📋 Task Management
+Seamlessly organize your tasks, projects, and to-do lists within Pomodorodex. Prioritize, categorize, and track your progress effortlessly, ensuring that you stay on top of your goals.
 
-📊 Stats Tracking: Gain valuable insights into your work habits and accomplishments with comprehensive statistics tracking. Analyze your productivity trends over time, empowering you to make data-driven decisions for improved performance.
+### 🎵 Customizable Music
+Enhance your work environment with customizable music options. Choose your favorite tunes to accompany your work sessions and breaks, making your productivity experience personalized and enjoyable.
 
-Discover the power of Pomodorodex and take control of your productivity like never before. 
+### 📊 Stats Tracking
+Gain valuable insights into your work habits and accomplishments with comprehensive statistics tracking. Analyze your productivity trends over time, empowering you to make data-driven decisions for improved performance.
 
-Issues:
+### ⚙️ Customizable Sessions
+Tailor your Pomodoro sessions to your preferences. Set the duration of Pomodoro and break sessions, as well as the number of sessions in a work block. Customize your work environment to match your unique workflow.
+
+## Bugs/Issues:
+----------------------
 
 - Pomodoro Timer continues running while the timer is paused.
+- Audio only plays during one routine and needs to be selected again.
 - Task manager only allows the last task to be edited.
-- Light mode does not proper show.
+- Light mode does not properly show.
 - Slider starts Timer while scrolling.
 - The switch buttons are set up in a mirrored-inverted.
 - Settings spinboxes play a song directly after being selected.
-- Tasks should be outsourced to db.
-- Statistics show buttons does not update itself based on the user selection:
-- Statistics should be updated in real time.
+- Tasks should be outsourced to the database.
+- Statistics should be updated in real-time.
 
-Sources I used:
+## Sources:
+----------------------
 
-Icons: 
+### Icons:
 
-- https://github.com/twbs/icons/releases/tag/v1.11.1
-
+- [Bootstrap](https://github.com/twbs/icons/releases/tag/v1.11.1)
 - Pomodordex-icon: me (generated with Stable-Diffusion)
 
-Audio:
+### Audio:
 
-- Ticking Sound (https://pixabay.com/sound-effects/ticking-clock-1-27477/)
-- Notification Sound (https://pixabay.com/sound-effects/service-bell-ring-14610/)
-- LAKEY INSPIRED - Blue Boi (https://www.youtube.com/watch?v=wAukvwLCVbM)
-- Eine kleine Nachtmusik - Mozart (https://archive.org/download/SerenadeNo.13EineKleineNachtmusikK.525)
-- https://ia800906.us.archive.org/12/items/SerenadeNo.13EineKleineNachtmusikK.525/Serenade%20No.%2013%20Eine%20Kleine%20Nachtmusik%2C%20K.525%20-%20I.%20Allegro.mp3
+- [Ticking Sound](https://pixabay.com/sound-effects/ticking-clock-1-27477/)
+- [Notification Sound](https://pixabay.com/sound-effects/service-bell-ring-14610/)
+- [LAKEY INSPIRED - Blue Boi](https://www.youtube.com/watch?v=wAukvwLCVbM)
+- [Eine kleine Nachtmusik - Mozart](https://archive.org/download/SerenadeNo.13EineKleineNachtmusikK.525)
+
+Enjoy the power of Pomodorodex and make every work session count!
