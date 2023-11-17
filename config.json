@@ -29,12 +29,10 @@
             "label": "Pomodoro"
         },
         {
-            "time": "01:00:00",
+            "time": "00:30:00",
             "label": "Long Break"
         }
     ],
-    "tasks": [],
-    "statistics": [],
     "settings": [
         {
             "pomodoroDuration": "00:25:00"
@@ -58,7 +56,7 @@
             "pomodoroSoundVolume": "100"
         },
         {
-            "breakSound": true
+            "breakSound": false
         },
         {
             "customBreakSoundSelected": "None"

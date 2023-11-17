@@ -1,3 +1,5 @@
+import sqlite3
+
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLineEdit, \
@@ -74,8 +76,7 @@ class TaskManagement(QWidget):
 
         # task lists
         self.tasks = []
-        self.load_tasks_from_config()
-        self.save_tasks_for_config()
+        self.load_tasks_from_db()
 
         # conncections
         self.line_edit.returnPressed.connect(self.save_task)
@@ -164,27 +165,41 @@ class TaskManagement(QWidget):
                 style_sheet = qss_file.read()
                 self.setStyleSheet(style_sheet)
 
-    def load_tasks_from_config(self):
-        with open("config.json", "r") as f:
-            config = json.load(f)
-            tasks_list = [(item["task"], item["checked"]) for item in config["tasks"]]
+    def load_tasks_from_db(self):
+        try:
+            conn = sqlite3.connect("app/components/pomodorodex.db")
+            cursor = conn.cursor()
+            cursor.execute("SELECT task, status FROM task_list")
+            tasks_list = cursor.fetchall()
             for task_text, task_checked in tasks_list:
+                if task_checked == "True":
+                    task_checked = True
+                else:
+                    task_checked = False
                 self.create_task_widget(task_text, task_checked)
 
-    def save_tasks_for_config(self):
-        with open("config.json", "r") as f:
-            config = json.load(f)
+        except sqlite3.Error as e:
+            print("An error occurred:", e)
+        finally:
+            conn.close()
 
-        task_list = []
-        for task_checkbox, edit_btn, delete_btn, task_widget, _ in self.tasks:
-            task_text = task_widget.findChild(QLineEdit).text()
-            task_checked = task_checkbox.isChecked()
-            task_list.append({"task": task_text, "checked": task_checked})
+    def save_tasks_for_db(self):
+        try:
+            conn = sqlite3.connect("app/components/pomodorodex.db")
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM task_list")
+            conn.commit()
 
-        config["tasks"] = task_list
+            for task_checkbox, edit_btn, delete_btn, task_widget, _ in self.tasks:
+                task_text = task_widget.findChild(QLineEdit).text()
+                task_checked = 'True' if task_checkbox.isChecked() else 'False'
+                cursor.execute("INSERT INTO task_list (task, status) VALUES (?, ?)", (task_text, task_checked))
+            conn.commit()
 
-        with open("config.json", "w") as f:
-            json.dump(config, f, indent=4)
+        except sqlite3.Error as e:
+            print("An error occurred:", e)
+        finally:
+            conn.close()
 
     def create_task_widget(self, task_text, task_checked=False):
         # task widget
@@ -244,7 +259,10 @@ class TaskManagement(QWidget):
             task_checkbox.setChecked(True)
             text_line_edit.setObjectName("task_finished")
             edit_btn.setObjectName("secondary_btn")
+            delete_btn.setObjectName("secondary_btn")
             self.load_stylesheet()
+        else:
+            task_checkbox.setChecked(False)
 
         # add to list...
         self.tasks.append((task_checkbox, edit_btn, delete_btn, task_widget, text_line_edit, ))

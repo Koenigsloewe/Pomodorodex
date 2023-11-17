@@ -3,10 +3,16 @@ import sqlite3
 import sys
 from datetime import datetime
 
+try:
+    from PyQt5 import sip
+except ImportError:
+    import sip
+
 from PyQt5.QtCore import QUrl, QTime
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtMultimedia import QMediaContent
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, \
+    QPushButton
 
 try:
     from components.pomodoro_timer import Timer
@@ -64,7 +70,7 @@ class MainWindow(QMainWindow):
         helper1_layout.setContentsMargins(9, 30, 30, 30)
         helper1.setLayout(helper1_layout)
 
-        #helper 2
+        # helper 2
         helper2 = QWidget()
         management_tool_layout.addWidget(helper2)
 
@@ -88,12 +94,17 @@ class MainWindow(QMainWindow):
         self.menubar.statistics_btn.clicked.connect(self.click_statistics_btn)
         self.menubar.settings_btn.clicked.connect(self.click_settings_btn)
 
-        self.content.page3.pomodoro_sound_changed.connect(lambda value: self.pomodoro_timer.timer_sound_player.setVolume(value))
-        self.content.page3.break_sound_changed.connect(lambda value: self.pomodoro_timer.break_sound_player.setVolume(value))
+        self.content.page3.pomodoro_sound_changed.connect(
+            lambda value: self.pomodoro_timer.timer_sound_player.setVolume(value))
+        self.content.page3.break_sound_changed.connect(
+            lambda value: self.pomodoro_timer.break_sound_player.setVolume(value))
 
-        self.content.page3.ticking_sound_bool_changed.connect(lambda set_bool: self.pomodoro_timer.timer_sound_player.setMuted(set_bool))
-        self.content.page3.break_sound_bool_changed.connect(lambda set_bool: self.pomodoro_timer.break_sound_player.setMuted(set_bool))
-        self.content.page3.notification_changed.connect(lambda set_bool: self.pomodoro_timer.break_sound.setMuted(set_bool))
+        self.content.page3.ticking_sound_bool_changed.connect(
+            lambda set_bool: self.pomodoro_timer.timer_sound_player.setMuted(set_bool))
+        self.content.page3.break_sound_bool_changed.connect(
+            lambda set_bool: self.pomodoro_timer.break_sound_player.setMuted(set_bool))
+        self.content.page3.notification_changed.connect(
+            lambda set_bool: self.pomodoro_timer.break_sound.setMuted(set_bool))
         self.content.page3.dark_mode_changed.connect(lambda set_bool: self.change_stylesheet(set_bool))
 
         self.content.page3.timer_mediaplayer_sound_changed.connect(
@@ -153,44 +164,49 @@ class MainWindow(QMainWindow):
             config = json.load(f)
             self.routines = [(QTime.fromString(item["time"], "hh:mm:ss"), item["label"]) for item in config["routines"]]
 
-        #self.pomodoro_timer.start_time_routine(self.routines)
-        self.pomodoro_timer.start_timer(self.routines)
+        self.pomodoro_timer.start_time_routine(self.routines)
+        # self.pomodoro_timer.start_timer(self.routines)
+        # self.pomodoro_timer.stop_timer()
 
     def timer_sound_changed(self, path):
         self.pomodoro_timer.timer_sound_player.stop()
         self.pomodoro_timer.timer_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
         self.pomodoro_timer.timer_sound_player.play()
-        
+
     def break_sound_changed(self, path):
         self.pomodoro_timer.break_sound_player.stop()
         self.pomodoro_timer.break_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
         self.pomodoro_timer.break_sound_player.play()
 
     def update_or_insert_data(self, date, focus_time, break_time):
-        conn = sqlite3.connect("app/components/pomodorodex.db")
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM pomodoro_sessions WHERE date = ?', (date,))
-        existing_data = cursor.fetchone()
+        try:
+            conn = sqlite3.connect("app/components/pomodorodex.db")
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM pomodoro_sessions WHERE date = ?', (date,))
+            existing_data = cursor.fetchone()
 
-        if existing_data:
-            new_focus_time = float(existing_data[2]) + round(focus_time, 3)
-            new_break_time = float(existing_data[3]) + round(break_time, 3)
-            cursor.execute('''
-                            UPDATE pomodoro_sessions
-                            SET focus_time = ?, break_time = ?
-                            WHERE date = ?
-                        ''', (new_focus_time, new_break_time, date))
-        else:
-            self.cursor.execute('''
-                INSERT INTO pomodoro_sessions (date, focus_time, break_time)
-                VALUES (?, ?, ?)
-            ''', (date, focus_time, break_time))
+            if existing_data:
+                new_focus_time = float(existing_data[2]) + round(focus_time, 3)
+                new_break_time = float(existing_data[3]) + round(break_time, 3)
+                cursor.execute('''
+                                UPDATE pomodoro_sessions
+                                SET focus_time = ?, break_time = ?
+                                WHERE date = ?
+                            ''', (new_focus_time, new_break_time, date))
+            else:
+                self.cursor.execute('''
+                    INSERT INTO pomodoro_sessions (date, focus_time, break_time)
+                    VALUES (?, ?, ?)
+                ''', (date, focus_time, break_time))
 
-        conn.commit()
-        conn.close()
+            conn.commit()
+        except Exception as e:
+            print(f"error {e}")
+        finally:
+            conn.close()
 
     def closeEvent(self, event):
-        self.content.page1.save_tasks_for_config()
+        self.content.page1.save_tasks_for_db()
 
         date = datetime.now().strftime('%Y-%m-%d')
         focus_time = sum(self.pomodoro_timer.pomodoro_durations)
@@ -209,6 +225,3 @@ def main():
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
-
-
-

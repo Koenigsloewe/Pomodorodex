@@ -7,6 +7,10 @@
 
 Pomodorodex is a versatile productivity application designed to enhance your focus, productivity, and time management. With its intuitive interface and powerful features, Pomodorodex is the ideal tool for professionals, students, and anyone looking to maximize their work efficiency.
 
+<img src="ui/taskmanagment_UI.png" width="960">
+
+
+
 ## Key Features:
 ----------------------
 

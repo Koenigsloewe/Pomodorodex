@@ -215,9 +215,22 @@ def generate_db():
             cursor = conn.cursor()
             cursor.execute('''
                 CREATE TABLE pomodoro_sessions (
-                    date TEXT PRIMARY KEY,
+                    id INTEGER PRIMARY KEY,
+                    date DATE,
                     focus_time INTEGER,
                     break_time INTEGER
                 )
             ''')
             conn.commit()
+
+            cursor.execute('''
+                CREATE TABLE task_list (
+                    id INTEGER PRIMARY KEY,
+                    task TEXT,
+                    status TEXT CHECK(status IN ('checked', 'unchecked'))
+                );
+
+            ''')
+            conn.commit()
+
+            conn.close()
