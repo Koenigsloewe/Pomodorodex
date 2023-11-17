@@ -11,7 +11,7 @@ try:
 except ModuleNotFoundError:
     from .custom_widgets import SwitchButton
 
-TIME_VALUES = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 45, 60]
+TIME_VALUES = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 45, 59]
 SETTING_INDEX_MAP = {
     "Pomodoro": [0, "pomodoroDuration"],
     "Short Break": [1, "shortBreakDuration"],
@@ -166,7 +166,7 @@ class Settings(QWidget):
 
         self.ticking_sound_switch_btn = SwitchButton()
         self.ticking_sound_switch_btn.setObjectName("toggle")
-        self.ticking_sound_switch_btn.setChecked(ticking_sound_bool)
+        self.ticking_sound_switch_btn.setChecked(not ticking_sound_bool)
         sound_settings_widget_layout.addWidget(self.ticking_sound_switch_btn, 1, 1)
         sound_settings_widget_layout.setAlignment(self.ticking_sound_switch_btn, Qt.AlignRight | Qt.AlignVCenter)
 
@@ -208,7 +208,7 @@ class Settings(QWidget):
         sound_settings_widget_layout.addWidget(break_volume_label, 6, 0)
 
         self.break_sound_switch_btn = SwitchButton()
-        self.break_sound_switch_btn.setChecked(break_sound_bool)
+        self.break_sound_switch_btn.setChecked(not break_sound_bool)
         sound_settings_widget_layout.addWidget(self.break_sound_switch_btn, 6, 1)
         sound_settings_widget_layout.setAlignment(self.break_sound_switch_btn, Qt.AlignRight | Qt.AlignVCenter)
 
@@ -262,14 +262,14 @@ class Settings(QWidget):
         desktop_settings_widget_layout.addWidget(dark_mode_label, 1, 0)
 
         self.dark_mode_switch_btn = SwitchButton()
-        self.dark_mode_switch_btn.setChecked(dark_mode_bool)
+        self.dark_mode_switch_btn.setChecked(not dark_mode_bool)
         desktop_settings_widget_layout.addWidget(self.dark_mode_switch_btn, 1, 1)
 
         notification_label = QLabel("Notification")
         desktop_settings_widget_layout.addWidget(notification_label, 2, 0)
 
         self.notification_switch_btn = SwitchButton()
-        self.notification_switch_btn.setChecked(notification_bool)
+        self.notification_switch_btn.setChecked(not notification_bool)
         desktop_settings_widget_layout.addWidget(self.notification_switch_btn, 2, 1)
 
         # about widget setup
@@ -417,11 +417,11 @@ Thank you for using Pomodorodex! I hope it helps you on your productivity journe
             config = json.load(f)
             index, setting = SETTING_INDEX_MAP[setting_key]
             if state == 2:
-                config["settings"][index][setting] = True
-                value = True
-            elif state == 0:
                 config["settings"][index][setting] = False
                 value = False
+            elif state == 0:
+                config["settings"][index][setting] = True
+                value = True
             f.seek(0)
             json.dump(config, f, indent=4)
             f.truncate()
