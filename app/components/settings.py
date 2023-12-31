@@ -26,6 +26,13 @@ SETTING_INDEX_MAP = {
     "Dark Mode": [10, "darkMode"],
     "Notification": [11, "notification"]
 }
+SOUND_PATH_MAP = {
+    "None": "None",
+    "Ticking Sound": os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\ticking_sound.mp3'),
+    "LoFi": os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\LAKEY_INSPIRED_-Blue_Boi.mp3'),
+    "Classic": os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\eine_kleine_nachtmusik.mp3'),
+    "Custom Music": "Custom"
+}
 
 
 class Settings(QWidget):
@@ -55,6 +62,7 @@ class Settings(QWidget):
         break_sound_volume = int(self.config["settings"][9]["breakSoundVolume"])
         dark_mode_bool = self.config["settings"][10]["darkMode"]
         notification_bool = self.config["settings"][11]["notification"]
+        print(custom_break_sound_selected_string, custom_pomodoro_sound_selected_string)
 
         layout = QVBoxLayout()
         layout.setContentsMargins(30, 30, 30, 30)
@@ -181,7 +189,9 @@ class Settings(QWidget):
         self.custom_sound_combobox.addItem("LoFi")
         self.custom_sound_combobox.insertSeparator(200)
         self.custom_sound_combobox.addItem("Custom Music")
-        self.custom_sound_combobox.setCurrentText(custom_pomodoro_sound_selected_string)
+        display_name = next(
+            (name for name, path in SOUND_PATH_MAP.items() if path == custom_pomodoro_sound_selected_string), "None")
+        self.custom_sound_combobox.setCurrentText(display_name)
         sound_settings_widget_layout.addWidget(self.custom_sound_combobox, 2, 1)
         sound_settings_widget_layout.setAlignment(self.custom_sound_combobox, Qt.AlignRight | Qt.AlignVCenter)
 
@@ -222,7 +232,9 @@ class Settings(QWidget):
         self.custom_break_sound_combobox.addItem("Classic")
         self.custom_break_sound_combobox.insertSeparator(200)
         self.custom_break_sound_combobox.addItem("Custom Music")
-        self.custom_break_sound_combobox.setCurrentText(custom_break_sound_selected_string)
+        display_name = next(
+            (name for name, path in SOUND_PATH_MAP.items() if path == custom_break_sound_selected_string), "None")
+        self.custom_break_sound_combobox.setCurrentText(display_name)
         sound_settings_widget_layout.addWidget(self.custom_break_sound_combobox, 7, 1)
         sound_settings_widget_layout.setAlignment(self.custom_break_sound_combobox, Qt.AlignRight | Qt.AlignVCenter)
 
@@ -440,36 +452,28 @@ Thank you for using Pomodorodex! I hope it helps you on your productivity journe
             config = json.load(f)
             index_setting, setting = SETTING_INDEX_MAP[setting_key]
 
-            if text == "None":
-                path = "None"
-                config["settings"][index_setting][setting] = path
-
-            elif text == "Ticking Sound":
-                path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\ticking_sound.mp3')
-                config["settings"][index_setting][setting] = path
-                self.timer_mediaplayer_sound_changed.emit(path)
-
-            elif text == "LoFi":
-                path = os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\LAKEY_INSPIRED_-Blue_Boi.mp3')
-                config["settings"][index_setting][setting] = path
-                self.timer_mediaplayer_sound_changed.emit(path)
-
-            elif text == "Classic":
-                path = os.path.join(os.path.dirname(os.path.abspath(__file__)),  r'..\resources\sound\eine_kleine_nachtmusik.mp3')
-                config["settings"][index_setting][setting] = path
-
+            # Use the mapping to get the file path
+            if text in SOUND_PATH_MAP:
+                path = SOUND_PATH_MAP[text]
             elif text == "Custom Music":
+                # Handle custom music selection
                 option = QFileDialog.Options()
                 option |= QFileDialog.ReadOnly
-                path, _ = QFileDialog.getOpenFileName(self, "Select Audio File", '/', "Audio Files (*.mp3);;All Files (*)", options=option)
+                path, _ = QFileDialog.getOpenFileName(self, "Select Audio File", '/',
+                                                      "Audio Files (*.mp3);;All Files (*)", options=option)
+            else:
+                # Default case
+                path = "None"
 
-                config["settings"][index_setting][setting] = path
+            config["settings"][index_setting][setting] = path
 
+            # Emit signal based on setting_key
             if setting_key == "Custom Pomodoro Sound Selected":
                 self.timer_mediaplayer_sound_changed.emit(path)
             elif setting_key == "Custom Break Sound Selected":
                 self.break_mediaplayer_sound_changed.emit(path)
 
+            # Update the configuration file
             f.seek(0)
             json.dump(config, f, indent=4)
             f.truncate()

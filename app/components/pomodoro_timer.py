@@ -171,13 +171,17 @@ class Timer(QWidget):
 
             self.time_limit_const = - (1 / self.time_left.secsTo(QTime(0, 0)))
 
-            self.start_time_phase.append(QTime.currentTime())
+            try:
+                self.start_time_phase.append(QTime.currentTime())
+            except:
+                pass
+
             print(self.start_time_phase)
 
             try:
                 self.difference = self.start_time_phase[-2].secsTo(self.start_time_phase[-1]) / 60
                 print(self.difference)
-            except IndexError as e:
+            except:
                 self.difference = 0
 
             if index != 0:
@@ -238,6 +242,7 @@ class Timer(QWidget):
         self.time_left = self.time_left.addSecs(-1)
         current_time = self.time_left.toString(Qt.TextDate)
         self.progressbar.timer_label.setText(current_time)
+        print(current_time)
 
         if self.time_left == QTime(0, 0):
             self.timer.stop()
@@ -311,6 +316,7 @@ class Timer(QWidget):
         self.timer_sound_player.setMedia(media_content)
         self.timer_sound_player.setVolume(self.timer_sound_int)
         self.timer_sound_player.setMuted(self.timer_sound_bool)
+        print(self.timer_sound_bool)
         self.timer_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
 
     def play_break_sound(self):
@@ -321,6 +327,7 @@ class Timer(QWidget):
         self.break_sound_player.setMedia(media_content2)
         self.break_sound_player.setVolume(self.break_sound_int)
         self.break_sound_player.setMuted(self.break_sound_bool)
+        print(self.break_sound_bool)
         self.break_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
 
     def on_media_status_changed(self, status):
@@ -341,3 +348,19 @@ class Timer(QWidget):
             self.active_player.setVolume(value)
         elif self.active_player == self.break_sound_player:
             self.active_player.setVolume(value)
+
+    def update_timer_sound(self, path):
+        if path:  # Ensure the path is not empty or invalid
+            if self.timer_sound_player.state() == QMediaPlayer.PlayingState:
+                self.timer_sound_player.stop()
+            self.timer_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+            if self.timer.isActive():  # Check if the timer is running
+                self.timer_sound_player.play()
+
+    def update_break_sound(self, path):
+        if path:
+            if self.break_sound_player.state() == QMediaPlayer.PlayingState:
+                self.break_sound_player.stop()
+            self.break_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+            if self.timer.isActive() and self.modus_label.text().startswith("Break"):
+                self.break_sound_player.play()

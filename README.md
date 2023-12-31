@@ -36,7 +36,6 @@ Tailor your Pomodoro sessions to your preferences. Set the duration of Pomodoro 
 - Audio only plays during one routine and needs to be selected again.
 - Light mode does not properly show.
 - Slider starts Timer while scrolling.
-- Settings spinboxes play a song directly after being selected.
 - Statistics should be updated in real-time.
 
 ## Sources:

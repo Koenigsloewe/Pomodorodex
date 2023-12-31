@@ -108,9 +108,9 @@ class MainWindow(QMainWindow):
         self.content.page3.dark_mode_changed.connect(lambda set_bool: self.change_stylesheet(set_bool))
 
         self.content.page3.timer_mediaplayer_sound_changed.connect(
-            lambda path: self.timer_sound_changed(path))
+            self.pomodoro_timer.update_timer_sound)
         self.content.page3.break_mediaplayer_sound_changed.connect(
-            lambda path: self.pomodoro_timer.break_sound_player.setMedia(QMediaContent(QUrl.fromLocalFile(path))))
+            self.pomodoro_timer.update_break_sound)
 
         self.content.page3.routine_changed.connect(lambda mylist: self.change_routine())
 
