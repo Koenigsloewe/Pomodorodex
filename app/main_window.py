@@ -157,16 +157,11 @@ class MainWindow(QMainWindow):
         self.load_stylesheet()
 
     def change_routine(self):
-        self.routines = []
-        self.pomodoro_timer.start_time_routine(self.routines)
-
         with open("config.json", "r") as f:
             config = json.load(f)
             self.routines = [(QTime.fromString(item["time"], "hh:mm:ss"), item["label"]) for item in config["routines"]]
 
-        self.pomodoro_timer.start_time_routine(self.routines)
-        # self.pomodoro_timer.start_timer(self.routines)
-        # self.pomodoro_timer.stop_timer()
+        self.pomodoro_timer.update_routines(self.routines)
 
     def timer_sound_changed(self, path):
         self.pomodoro_timer.timer_sound_player.stop()

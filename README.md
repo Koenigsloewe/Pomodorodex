@@ -35,7 +35,6 @@ Tailor your Pomodoro sessions to your preferences. Set the duration of Pomodoro 
 - Pomodoro Timer continues running while the timer is paused.
 - Audio only plays during one routine and needs to be selected again.
 - Light mode does not properly show.
-- Slider starts Timer while scrolling.
 - Statistics should be updated in real-time.
 
 ## Sources:

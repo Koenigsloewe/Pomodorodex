@@ -206,6 +206,43 @@ class Timer(QWidget):
         else:
             QTimer.singleShot(0, lambda: self.start_time_routine(routines, 0))
 
+    def update_routines(self, new_routines):
+        self.routines = new_routines
+        self.reset_timer()
+
+    def reset_timer(self):
+        # Stop the timer if it's running
+        self.timer.stop()
+
+        # Reset the media players
+        self.timer_sound_player.stop()
+        self.break_sound_player.stop()
+
+        # Reset the progress bar and labels to initial state
+        self.reset_progressbar()
+        if self.routines:
+            self.start_time = self.routines[0][0].toString(Qt.TextDate)
+            start_text = self.routines[0][1]
+            self.progressbar.timer_label.setText(self.start_time)
+            self.modus_label.setText(start_text)
+
+        # Reset other internal states as needed
+        self.start_time_phase = []
+        self.pomodoro_durations = []
+        self.break_durations = []
+        self.stop1 = 1
+        self.stop2 = 1
+
+        # Ensure the start button is visible and others are hidden
+        self.grouped_btn_layout.removeWidget(self.pause_btn)
+        self.pause_btn.setParent(None)
+        self.grouped_btn_layout.removeWidget(self.stop_btn)
+        self.stop_btn.setParent(None)
+        self.grouped_btn_layout.removeWidget(self.resume_btn)
+        self.resume_btn.setParent(None)
+        if not self.grouped_btn_layout.indexOf(self.start_btn) >= 0:
+            self.grouped_btn_layout.addWidget(self.start_btn)
+
     def sync_progressbar(self):
         self.stop2 = self.stop1 - self.time_limit_const
 
