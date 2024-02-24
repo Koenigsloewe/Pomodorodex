@@ -39,7 +39,7 @@ Ensure Python is installed on your system. Download it from [the official Python
 Download the source code from its repository. Extract the zip file or clone the repository using:  
   
 ````bash
-git clone <repository-url>  
+git clone https://github.com/Koenigsloewe/Pomodorodex.git
 ````  
   
 ### Step 2: Install Dependencies  
