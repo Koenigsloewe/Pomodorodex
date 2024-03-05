@@ -176,11 +176,8 @@ class Timer(QWidget):
             except:
                 pass
 
-            print(self.start_time_phase)
-
             try:
                 self.difference = self.start_time_phase[-2].secsTo(self.start_time_phase[-1]) / 60
-                print(self.difference)
             except:
                 self.difference = 0
 
@@ -196,9 +193,6 @@ class Timer(QWidget):
                 self.active_player.stop()
                 self.active_player = self.timer_sound_player
                 self.break_durations.append(self.difference)
-
-            print(self.start_time_phase)
-            print(self.pomodoro_durations, self.break_durations)
 
             # Use a QTimer to call the next routine
             QTimer.singleShot(time.msecsSinceStartOfDay(), lambda: self.start_time_routine(routines, index + 1))
@@ -279,7 +273,6 @@ class Timer(QWidget):
         self.time_left = self.time_left.addSecs(-1)
         current_time = self.time_left.toString(Qt.TextDate)
         self.progressbar.timer_label.setText(current_time)
-        print(current_time)
 
         if self.time_left == QTime(0, 0):
             self.timer.stop()
@@ -332,10 +325,8 @@ class Timer(QWidget):
 
         if self.start_time_phase is not None:
             end_time = QTime.currentTime()
-            print(end_time)
-            print(self.start_time_phase[-1])
             duration = self.start_time_phase[-1].secsTo(end_time) / 60
-            print(duration)
+
             self.start_time_phase = None
 
             # Depending on the phase, append the duration to the corresponding list
@@ -343,7 +334,6 @@ class Timer(QWidget):
                 self.pomodoro_durations.append(duration)
             elif self.modus_label.text() == "Short Break" or self.modus_label.text() == "Long Break":
                 self.break_durations.append(duration)
-            print(self.pomodoro_durations, self.break_durations)
 
     def play_ticking_timer_sound(self):
         # get file
@@ -353,7 +343,6 @@ class Timer(QWidget):
         self.timer_sound_player.setMedia(media_content)
         self.timer_sound_player.setVolume(self.timer_sound_int)
         self.timer_sound_player.setMuted(self.timer_sound_bool)
-        print(self.timer_sound_bool)
         self.timer_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
 
     def play_break_sound(self):
@@ -364,7 +353,6 @@ class Timer(QWidget):
         self.break_sound_player.setMedia(media_content2)
         self.break_sound_player.setVolume(self.break_sound_int)
         self.break_sound_player.setMuted(self.break_sound_bool)
-        print(self.break_sound_bool)
         self.break_sound_player.mediaStatusChanged.connect(self.on_media_status_changed)
 
     def on_media_status_changed(self, status):

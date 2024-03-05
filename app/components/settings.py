@@ -28,9 +28,9 @@ SETTING_INDEX_MAP = {
 }
 SOUND_PATH_MAP = {
     "None": "None",
-    "Ticking Sound": os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\ticking_sound.mp3'),
-    "LoFi": os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\LAKEY_INSPIRED_-Blue_Boi.mp3'),
-    "Classic": os.path.join(os.path.dirname(os.path.abspath(__file__)), r'..\resources\sound\eine_kleine_nachtmusik.mp3'),
+    "Ticking Sound": os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'resources', 'sound', 'ticking_sound.mp3'),
+    "LoFi": os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'resources', 'sound', 'LAKEY_INSPIRED_-_Blue_Boi.mp3'),
+    "Classic": os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'resources', 'sound', 'eine_kleine_nachtmusik.mp3'),
     "Custom Music": "Custom"
 }
 
@@ -62,7 +62,6 @@ class Settings(QWidget):
         break_sound_volume = int(self.config["settings"][9]["breakSoundVolume"])
         dark_mode_bool = self.config["settings"][10]["darkMode"]
         notification_bool = self.config["settings"][11]["notification"]
-        print(custom_break_sound_selected_string, custom_pomodoro_sound_selected_string)
 
         layout = QVBoxLayout()
         layout.setContentsMargins(30, 30, 30, 30)
@@ -399,7 +398,6 @@ Thank you for using Pomodorodex! I hope it helps you on your productivity journe
             slider.valueChanged.connect(self.break_sound_changed.emit)
 
     def spinbox_changed(self, spinbox):
-        print(spinbox.value())  # Verify that the correct value is being received
 
         with open("config.json", "r+") as f:
             config = json.load(f)
@@ -437,7 +435,6 @@ Thank you for using Pomodorodex! I hope it helps you on your productivity journe
             f.seek(0)
             json.dump(config, f, indent=4)
             f.truncate()
-        print(f"Setting '{setting_key}' state changed to {state}")
         if setting_key == "Ticking Sound":
             self.ticking_sound_bool_changed.emit(value)
         elif setting_key == "Break Sound":

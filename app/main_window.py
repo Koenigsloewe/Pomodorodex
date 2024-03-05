@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
                                 WHERE date = ?
                             ''', (new_focus_time, new_break_time, date))
             else:
-                self.cursor.execute('''
+                cursor.execute('''
                     INSERT INTO pomodoro_sessions (date, focus_time, break_time)
                     VALUES (?, ?, ?)
                 ''', (date, focus_time, break_time))
@@ -206,7 +206,6 @@ class MainWindow(QMainWindow):
         date = datetime.now().strftime('%Y-%m-%d')
         focus_time = sum(self.pomodoro_timer.pomodoro_durations)
         break_time = sum(self.pomodoro_timer.break_durations)
-        print(date, focus_time, break_time)
         self.update_or_insert_data(date, focus_time, break_time)
 
         super().closeEvent(event)
